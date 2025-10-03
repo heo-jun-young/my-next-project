@@ -24,3 +24,28 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+@keyframes moveLeftRight {
+  0% {
+    background-position: center;
+  }
+  50% {
+    background-position: left center;
+  }
+  100% {
+    background-position: center;
+  }
+}
+
+.animate-moveLeftRight {
+  animation: moveLeftRight 20s ease-in-out infinite;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 3.75rem !important;
+  }
+  p {
+    font-size: 1.65rem !important;
+  }
+}

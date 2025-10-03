@@ -1,53 +1,15 @@
 export default function Home() {
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen bg-gray-50 px-6">
-      {/* Hero Section */}
-      <section className="text-center py-20">
-        <h1 className="text-5xl font-extrabold text-blue-600 mb-6">
-          🚀 나만의 홈페이지
+    <div className="w-full h-screen bg-[url('https://cdn.imweb.me/thumbnail/20250925/e6b9c1091f721.png')] bg-center bg-cover animate-moveLeftRight relative flex items-center justify-center">
+      <div className="text-center text-white z-10 max-w-[900px] px-5">
+        <h1 className="text-[5.25rem] font-bold leading-tight mb-8 drop-shadow-lg break-keep">
+          이야기의 주인공은 언제나 당신입니다.
         </h1>
-        <p className="text-lg text-gray-600 mb-8">
-          Next.js + Tailwind CSS로 만든 첫 번째 웹사이트입니다.
+        <p className="text-[1.95rem] font-normal leading-relaxed opacity-95 drop-shadow-md break-keep">
+          그로우마케팅은 브랜드가 아닌<br />고객을 먼저 바라봅니다.<br />
+          당신의 도전과 성장을 완성하는<br />든든한 파트너가 되겠습니다.
         </p>
-        <div className="flex gap-4 justify-center">
-          <a
-            href="#about"
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
-          >
-            더 알아보기
-          </a>
-          <a
-            href="#contact"
-            className="px-6 py-3 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition"
-          >
-            문의하기
-          </a>
-        </div>
-      </section>
-
-      {/* About Section */}
-      <section id="about" className="max-w-3xl text-center py-16">
-        <h2 className="text-3xl font-bold mb-4">About</h2>
-        <p className="text-gray-700">
-          이 홈페이지는 Next.js와 Tailwind CSS를 사용해 제작되었습니다.
-          <br /> 누구나 쉽게 커스터마이징하고 배포할 수 있습니다.
-        </p>
-      </section>
-
-      {/* Contact Section */}
-      <section id="contact" className="max-w-3xl text-center py-16">
-        <h2 className="text-3xl font-bold mb-4">Contact</h2>
-        <p className="text-gray-700 mb-6">
-          아래 버튼을 눌러 이메일로 연락해보세요.
-        </p>
-        <a
-          href="mailto:example@email.com"
-          className="px-6 py-3 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition"
-        >
-          이메일 보내기
-        </a>
-      </section>
-    </main>
-  );
+      </div>
+    </div>
+  )
 }
-
