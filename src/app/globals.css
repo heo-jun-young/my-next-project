@@ -27,6 +27,13 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;                   /* 가로 스크롤 방지 */
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 /* ============================= */
@@ -50,7 +57,7 @@ body {
   height: 100vh;
   min-height: 100vh;                    /* 최소 높이 보장 */
   background-image: url('https://cdn.imweb.me/thumbnail/20250925/e6b9c1091f721.png');
-  background-size: cover;               /* 화면 전체를 꽉 채움 */
+  background-size: 120% auto;           /* 약간 크게해서 애니메이션 + 화면 채우기 */
   background-repeat: no-repeat;
   background-position: center;
   animation: moveLeftRight 20s ease-in-out infinite;
