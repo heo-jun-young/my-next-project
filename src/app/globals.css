@@ -117,8 +117,7 @@ html, body {
 /* 반응형 */
 @media (max-width: 768px) {
   .hero-section {
-    background-size: cover !important;  /* 모바일에서 화면 꽉 채움 */
-    animation: none;                    /* 모바일에서는 애니메이션 끔 (선택사항) */
+    background-size: 150% auto !important;  /* 모바일에서도 애니메이션 공간 확보 */
   }
 
   .hero-title {
