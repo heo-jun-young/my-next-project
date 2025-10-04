@@ -40,13 +40,25 @@ html, body {
 /* 배경 애니메이션 */
 @keyframes moveLeftRight {
   0% { 
-    background-position: 100% center; 
+    background-position: 50% center; 
   }
   50% { 
     background-position: 0% center; 
   }
   100% { 
-    background-position: 100% center; 
+    background-position: 50% center; 
+  }
+}
+
+@keyframes moveLeftRightMobile {
+  0% { 
+    background-position: center center; 
+  }
+  50% { 
+    background-position: 30% center; 
+  }
+  100% { 
+    background-position: center center; 
   }
 }
 
@@ -117,7 +129,8 @@ html, body {
 /* 반응형 */
 @media (max-width: 768px) {
   .hero-section {
-    background-size: 150% auto !important;  /* 모바일에서도 애니메이션 공간 확보 */
+    background-size: cover !important;      /* 모바일에서 화면 꽉 채움 */
+    animation: moveLeftRightMobile 20s ease-in-out infinite !important;  /* 모바일 전용 애니메이션 */
   }
 
   .hero-title {
