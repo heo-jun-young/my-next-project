@@ -48,8 +48,9 @@ body {
 .hero-section {
   width: 100%;
   height: 100vh;
+  min-height: 100vh;                    /* 최소 높이 보장 */
   background-image: url('https://cdn.imweb.me/thumbnail/20250925/e6b9c1091f721.png');
-  background-size: 150% auto;           /* 배경 크기 확대로 움직임 공간 확보 */
+  background-size: cover;               /* 화면 전체를 꽉 채움 */
   background-repeat: no-repeat;
   background-position: center;
   animation: moveLeftRight 20s ease-in-out infinite;
@@ -109,7 +110,8 @@ body {
 /* 반응형 */
 @media (max-width: 768px) {
   .hero-section {
-    background-size: 200% auto;         /* 모바일에서 더 큰 움직임 */
+    background-size: cover !important;  /* 모바일에서 화면 꽉 채움 */
+    animation: none;                    /* 모바일에서는 애니메이션 끔 (선택사항) */
   }
 
   .hero-title {
@@ -118,5 +120,12 @@ body {
 
   .hero-description {
     font-size: 1.65rem !important;
+  }
+}
+
+/* PC에서만 애니메이션 */
+@media (min-width: 769px) {
+  .hero-section {
+    background-size: 150% auto;         /* PC에서 애니메이션 공간 확보 */
   }
 }
