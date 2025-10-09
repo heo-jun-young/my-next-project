@@ -148,3 +148,687 @@ html, body {
     background-size: 150% auto;         /* PC에서 애니메이션 공간 확보 */
   }
 }
+/* ========================================= */
+/* 🎨 ROOT VARIABLES & BASE STYLES */
+/* ========================================= */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Noto Sans KR', Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* ========================================= */
+/* 🎬 ANIMATIONS */
+/* ========================================= */
+@keyframes moveLeftRight {
+  0% { background-position: 50% center; }
+  50% { background-position: 0% center; }
+  100% { background-position: 50% center; }
+}
+
+@keyframes moveLeftRightMobile {
+  0% { background-position: center center; }
+  50% { background-position: 30% center; }
+  100% { background-position: center center; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ripple-animation {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* ========================================= */
+/* 🏠 HERO SECTION */
+/* ========================================= */
+.hero-section {
+  width: 100%;
+  height: 100vh;
+  min-height: 100vh;
+  background-image: url('https://cdn.imweb.me/thumbnail/20250925/e6b9c1091f721.png');
+  background-size: 120% auto;
+  background-repeat: no-repeat;
+  background-position: center;
+  animation: moveLeftRight 20s ease-in-out infinite;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-content {
+  text-align: center;
+  color: white;
+  z-index: 10;
+  max-width: 900px;
+  padding: 0 20px;
+}
+
+.hero-title {
+  font-size: 5.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  word-break: keep-all;
+}
+
+.hero-description {
+  font-size: 1.95rem;
+  font-weight: 400;
+  line-height: 1.6;
+  margin: 0;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  opacity: 0.95;
+  word-break: keep-all;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 40px;
+  animation: fadeInUp 1.5s ease 0.5s both;
+}
+
+.cta-button {
+  padding: 18px 40px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.cta-primary {
+  background: linear-gradient(135deg, #0066FF, #00D9FF);
+  color: white;
+}
+
+.cta-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0, 102, 255, 0.4);
+}
+
+.cta-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.cta-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-3px);
+}
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: bounce 2s infinite;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.scroll-arrow {
+  width: 30px;
+  height: 30px;
+  border-right: 3px solid white;
+  border-bottom: 3px solid white;
+  transform: rotate(45deg);
+  opacity: 0.8;
+}
+
+/* ========================================= */
+/* 🎨 CLICK RIPPLE EFFECT */
+/* ========================================= */
+.ripple {
+  position: fixed;
+  border-radius: 50%;
+  background: rgba(0, 123, 255, 0.5);
+  transform: scale(0);
+  animation: ripple-animation 0.6s linear;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ========================================= */
+/* 📦 COMMON STYLES */
+/* ========================================= */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* ========================================= */
+/* 🔹 ABOUT SECTION */
+/* ========================================= */
+.about-section {
+  padding: 120px 20px;
+  background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+}
+
+.about-intro {
+  text-align: center;
+  font-size: 1.4rem;
+  line-height: 1.8;
+  color: #666;
+  max-width: 800px;
+  margin: 0 auto 80px;
+  word-break: keep-all;
+}
+
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 40px;
+  margin-top: 60px;
+}
+
+.stat-card {
+  text-align: center;
+  padding: 40px 20px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.stat-number {
+  font-size: 3.5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #0066FF, #00D9FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+}
+
+.stat-label {
+  font-size: 1.2rem;
+  color: #666;
+  font-weight: 500;
+}
+
+/* ========================================= */
+/* 🛤️ CUSTOMER JOURNEY SECTION */
+/* ========================================= */
+.journey-section {
+  padding: 120px 20px;
+  background: white;
+}
+
+.journey-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 60px;
+  color: #333;
+  line-height: 1.4;
+  word-break: keep-all;
+}
+
+.journey-flow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.journey-step {
+  flex: 1;
+  text-align: center;
+  padding: 20px;
+  position: relative;
+}
+
+.step-icon {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 20px;
+  background: linear-gradient(135deg, #0066FF, #00D9FF);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: white;
+  position: relative;
+  z-index: 2;
+}
+
+.step-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.step-desc {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+.journey-arrow {
+  position: absolute;
+  top: 50px;
+  left: 100px;
+  width: calc(100% - 200px);
+  height: 3px;
+  background: linear-gradient(90deg, #0066FF, #00D9FF);
+  z-index: 1;
+}
+
+/* ========================================= */
+/* 📊 RESULTS SECTION */
+/* ========================================= */
+.results-section {
+  padding: 120px 20px;
+  background: linear-gradient(135deg, #0066FF 0%, #00D9FF 100%);
+  color: white;
+}
+
+.results-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.results-question {
+  font-size: 2rem;
+  font-weight: 300;
+  margin-bottom: 20px;
+  opacity: 0.9;
+}
+
+.results-answer {
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.result-item {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.result-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.result-metric {
+  font-size: 3rem;
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+
+.result-desc {
+  font-size: 1.2rem;
+  opacity: 0.95;
+}
+
+/* ========================================= */
+/* 💼 SERVICES SECTION */
+/* ========================================= */
+.services-section {
+  padding: 120px 20px;
+  background: #f8f9fa;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 60px auto 0;
+}
+
+.service-card {
+  background: white;
+  padding: 40px 30px;
+  border-radius: 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+}
+
+.service-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.service-icon {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 20px;
+  background: linear-gradient(135deg, #0066FF, #00D9FF);
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+.service-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.service-desc {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* ========================================= */
+/* 📞 CTA SECTION */
+/* ========================================= */
+.cta-section {
+  padding: 150px 20px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(0, 102, 255, 0.1) 0%, transparent 70%);
+  animation: rotate 30s linear infinite;
+}
+
+.cta-content {
+  position: relative;
+  z-index: 1;
+}
+
+.cta-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 30px;
+  line-height: 1.4;
+  word-break: keep-all;
+}
+
+.cta-subtitle {
+  font-size: 1.4rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 50px;
+}
+
+.cta-final-button {
+  padding: 20px 60px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #FF6B35, #F7931E);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.cta-final-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 20px 40px rgba(255, 107, 53, 0.4);
+}
+
+/* ========================================= */
+/* 📱 RESPONSIVE DESIGN */
+/* ========================================= */
+@media (max-width: 768px) {
+  /* Hero Section Mobile */
+  .hero-section {
+    background-size: cover !important;
+    animation: moveLeftRightMobile 20s ease-in-out infinite !important;
+  }
+
+  .hero-title {
+    font-size: 3.75rem !important;
+  }
+
+  .hero-description {
+    font-size: 1.65rem !important;
+  }
+
+  .hero-cta {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Common Mobile */
+  .section-title {
+    font-size: 2rem;
+  }
+
+  /* Journey Mobile */
+  .journey-title {
+    font-size: 1.8rem;
+  }
+
+  .journey-flow {
+    flex-direction: column;
+  }
+
+  .journey-arrow {
+    display: none;
+  }
+
+  /* Results Mobile */
+  .results-question {
+    font-size: 1.5rem;
+  }
+
+  .results-answer {
+    font-size: 2rem;
+  }
+
+  .results-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* CTA Mobile */
+  .cta-title {
+    font-size: 2rem;
+  }
+
+  .cta-subtitle {
+    font-size: 1.2rem;
+  }
+
+  .cta-final-button {
+    padding: 15px 40px;
+    font-size: 1.1rem;
+  }
+
+  /* Grid Mobile */
+  .stats-container,
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* PC에서만 애니메이션 */
+@media (min-width: 769px) {
+  .hero-section {
+    background-size: 150% auto;
+  }
+}
+/* ============================= */
+/* 🧭 상단 헤더 & 드롭다운 메뉴 */
+/* ============================= */
+.main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 2000;
+}
+
+.nav {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.nav a {
+  color: #333;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav a:hover {
+  color: #0066ff;
+}
+
+/* ✅ 드롭다운 메뉴 전체 hover 유지 */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropbtn {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #333;
+  padding: 8px 16px;
+}
+
+/* ✅ hover 범위를 확장해서 사라지지 않게 */
+.dropdown:hover .dropdown-content,
+.dropdown-content:hover {
+  display: block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 35px;
+  left: 0;
+  background: white;
+  min-width: 200px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  z-index: 3000;
+  transition: opacity 0.2s ease;
+}
+
+.dropdown-content a {
+  display: block;
+  padding: 12px 20px;
+  color: #333;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.dropdown-content a:hover {
+  background: #f0f0f0;
+}
