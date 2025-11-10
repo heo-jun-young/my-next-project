@@ -172,14 +172,6 @@ export default function Home() {
               </p>
             </Link>
 
-            <Link href="/services/naver" className="service-card">
-              <div className="service-icon">📍</div>
-              <h3 className="service-title">네이버 플레이스</h3>
-              <p className="service-desc">
-                로컬 비즈니스 최적화 및 리뷰 관리
-              </p>
-            </Link>
-
             <Link href="/services/website" className="service-card">
               <div className="service-icon">💻</div>
               <h3 className="service-title">홈페이지 제작</h3>
@@ -196,13 +188,6 @@ export default function Home() {
               </p>
             </Link>
 
-            <Link href="/services/automation" className="service-card">
-              <div className="service-icon">🤖</div>
-              <h3 className="service-title">자동화 솔루션</h3>
-              <p className="service-desc">
-                마케팅 프로세스 자동화로 효율성 극대화
-              </p>
-            </Link>
           </div>
         </div>
       </section>
