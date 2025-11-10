@@ -144,7 +144,7 @@ export default function Home() {
               <div className="service-icon">📱</div>
               <h3 className="service-title">SNS 광고</h3>
               <p className="service-desc">
-                인스타그램, 페이스북, 유튜브 등 주요 채널 광고 운영
+                 네이버, 페이스북(인스타그램), 유튜브 등 주요 채널 광고 운영
               </p>
             </Link>
 
@@ -171,6 +171,7 @@ export default function Home() {
                 SEO 최적화 블로그 콘텐츠 제작 및 운영
               </p>
             </Link>
+
 
             <Link href="/services/website" className="service-card">
               <div className="service-icon">💻</div>
