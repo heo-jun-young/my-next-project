@@ -150,9 +150,9 @@ export default function Home() {
 
             <Link href="/services/marketing" className="service-card">
               <div className="service-icon">📊</div>
-              <h3 className="service-title">마케팅 대행</h3>
+              <h3 className="service-title">마케팅 대행 서비스</h3>
               <p className="service-desc">
-                전략 수립부터 집행, 운영까지 토탈 솔루션
+                우리 업종에 맞는 전략부터 실행까지 한 번에 맡깁니다.
               </p>
             </Link>
 
@@ -177,7 +177,8 @@ export default function Home() {
               <div className="service-icon">💻</div>
               <h3 className="service-title">홈페이지 제작</h3>
               <p className="service-desc">
-                반응형 웹사이트 디자인 및 개발
+                반응형 웹사이트 디자인 및 개발<br />
+                "단순 ‘예쁜 사이트’가 아니라 ‘고객 신청이 늘어나는’ 홈페이지"
               </p>
             </Link>
 
