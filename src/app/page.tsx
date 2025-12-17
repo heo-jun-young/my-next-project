@@ -178,7 +178,7 @@ export default function Home() {
               <h3 className="service-title">홈페이지 제작</h3>
               <p className="service-desc">
                 반응형 웹사이트 디자인 및 개발<br />
-                "단순 ‘예쁜 사이트’가 아니라 ‘고객 신청이 늘어나는’ 홈페이지"
+                "단순 ‘예쁜 사이트’가 아니라 <br />‘고객 신청이 늘어나는’ 홈페이지"
               </p>
             </Link>
 
