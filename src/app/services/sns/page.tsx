@@ -55,7 +55,7 @@ export default function SnsPage() {
       <div className="container">
         {/* 히어로 섹션 */}
         <div className="hero">
-          <h1>🚀 SNS광고 (퍼포먼스 마케팅)</h1>
+          <h1> SNS광고 (퍼포먼스 마케팅)</h1>
           <p className="subtitle">
             여러분의 비즈니스를 온라인에서 빛나게 만들어 드립니다!
           </p>
@@ -64,20 +64,20 @@ export default function SnsPage() {
         {/* 쉬운 설명 섹션 */}
         <div className="easy-explanation">
           <h2>
-            <span className="emoji">🎯</span>
+            <span className="emoji"></span>
             정말 쉽게 설명해드릴게요!
           </h2>
           <div className="simple-text">
             <strong>SNS광고</strong>는 여러분이 매일 사용하는{" "}
             <strong>인스타그램, 페이스북, 네이버, 카카오톡</strong> 같은 곳에
-            우리 가게나 상품을 알리는 광고예요! 🏪
+            우리 가게나 상품을 알리는 광고예요! 
             <br />
             <br />
             <strong>퍼포먼스 마케팅</strong>이라고도 하는데 "얼마나 잘 팔렸는지" 숫자로
             정확히 보여주는 똑똑한 광고예요.
             <br />
             예를 들어, <strong>1만원 광고비로 10만원 매출</strong>이 나왔다면
-            성공! 📈
+            성공! 
             <br />
             <br />
             쉽게 말해,{" "}
