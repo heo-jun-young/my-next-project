@@ -28,8 +28,6 @@ export default function RootLayout({
               <div className="dropdown-content">
                 <Link href="/services/sns">SNS 광고</Link>
                 <Link href="/services/marketing">마케팅 대행</Link>
-                <Link href="/services/content">콘텐츠 제작</Link>
-                <Link href="/services/blog">블로그 마케팅</Link>
                 <Link href="/services/website">홈페이지 제작</Link>
                 <Link href="/services/crm">CRM 세팅</Link>
               </div>

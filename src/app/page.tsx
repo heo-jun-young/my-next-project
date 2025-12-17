@@ -24,6 +24,32 @@ export default function Home() {
     document.addEventListener("click", handleClick);
 
     // ==============================
+    // 💧 서비스 카드 Ripple 효과
+    // ==============================
+    const serviceCards = document.querySelectorAll<HTMLAnchorElement>(".service-card");
+
+    const handleCardClick = (e: MouseEvent) => {
+      const card = e.currentTarget as HTMLElement;
+      const rect = card.getBoundingClientRect();
+
+      const ripple = document.createElement("span");
+      ripple.className = "card-ripple";
+
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      ripple.style.left = `${x}px`;
+      ripple.style.top = `${y}px`;
+
+      card.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    };
+
+    serviceCards.forEach((card) => {
+      card.addEventListener("click", handleCardClick);
+    });
+
+    // ==============================
     // 🔢 숫자 카운트 애니메이션
     // ==============================
     const counters = document.querySelectorAll<HTMLDivElement>(".stat-number");
@@ -64,6 +90,9 @@ export default function Home() {
 
     return () => {
       document.removeEventListener("click", handleClick);
+      serviceCards.forEach((card) => {
+        card.removeEventListener("click", handleCardClick);
+      });
       observer.disconnect();
     };
   }, []);
@@ -155,23 +184,6 @@ export default function Home() {
                 우리 업종에 맞는 전략부터 실행까지 한 번에 맡깁니다.
               </p>
             </Link>
-
-            <Link href="/services/content" className="service-card">
-              <div className="service-icon">🎨</div>
-              <h3 className="service-title">콘텐츠 제작</h3>
-              <p className="service-desc">
-                브랜드 스토리를 담은 매력적인 콘텐츠
-              </p>
-            </Link>
-
-            <Link href="/services/blog" className="service-card">
-              <div className="service-icon">✍️</div>
-              <h3 className="service-title">블로그 마케팅</h3>
-              <p className="service-desc">
-                SEO 최적화 블로그 콘텐츠 제작 및 운영
-              </p>
-            </Link>
-
 
             <Link href="/services/website" className="service-card">
               <div className="service-icon">💻</div>
