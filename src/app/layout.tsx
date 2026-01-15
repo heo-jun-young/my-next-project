@@ -5,11 +5,11 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://growmarketing.co.kr"),
   title: {
-    default: "그로우 마케팅 | 종합 광고대행 (마케팅·SNS광고·홈페이지·CRM)",
+    default: "그로우 마케팅 | 성과 중심 종합 마케팅 대행사",
     template: "%s | 그로우 마케팅",
   },
   description:
-    "그로우 마케팅은 마케팅, SNS광고, 홈페이지, CRM까지 한 번에 설계·실행하는 성과 중심 종합 광고대행사입니다.",
+    "그로우 마케팅은 SNS광고, 홈페이지 제작까지 한 번에 설계·실행하는 성과 중심 종합 마케팅 대행사입니다.",
   alternates: {
     canonical: "https://growmarketing.co.kr",
   },
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     locale: "ko_KR",
     title: "그로우 마케팅",
     description:
-      "마케팅, SNS광고, 홈페이지, CRM까지 올인원으로 성과를 만드는 종합 광고대행사",
+      "SNS광고, 홈페이지 제작까지 올인원으로 성과를 만드는 종합 마케팅 대행사",
     images: [
       {
         url: "https://cdn.imweb.me/thumbnail/20251217/836b4ef0e58ac.png",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "그로우 마케팅",
-    description: "마케팅·SNS광고·홈페이지·CRM 올인원",
+    description: "SNS광고·홈페이지 제작 올인원 마케팅",
     images: ["https://cdn.imweb.me/thumbnail/20251217/836b4ef0e58ac.png"],
   },
 };
@@ -60,21 +60,15 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
         />
         {/* ============================== */}
-        {/* 🧭 상단 헤더 영역 */}
+        {/* 상단 헤더 영역 */}
         {/* ============================== */}
         <header className="main-header">
           <nav className="nav">
-            <Link href="/">홈</Link>
-
-            {/* 제공 서비스 드롭다운 */}
-            <div className="dropdown">
-              <button className="dropbtn">제공 서비스 ▾</button>
-              <div className="dropdown-content">
-                <Link href="/services/sns">SNS 광고</Link>
-                <Link href="/services/marketing">마케팅 대행</Link>
-                <Link href="/services/website">홈페이지 제작</Link>
-                <Link href="/services/crm">CRM 세팅</Link>
-              </div>
+            <Link href="/" className="nav-logo">그로우마케팅</Link>
+            <div className="nav-links">
+              <Link href="/">홈</Link>
+              <Link href="/portfolio">성공사례</Link>
+              <Link href="/contact">문의하기</Link>
             </div>
           </nav>
         </header>
@@ -82,7 +76,7 @@ export default function RootLayout({
         {/* ============================== */}
         {/* 본문 콘텐츠 영역 */}
         {/* ============================== */}
-        <main style={{ marginTop: "90px" }}>{children}</main>
+        <main>{children}</main>
       </body>
     </html>
   );

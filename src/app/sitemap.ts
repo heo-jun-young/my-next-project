@@ -4,10 +4,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://growmarketing.co.kr";
   const routes = [
     "",
-    "/services/marketing",
+    "/portfolio",
+    "/contact",
     "/services/sns",
     "/services/website",
-    "/services/crm",
   ];
 
   return routes.map((path) => ({

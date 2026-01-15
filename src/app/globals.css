@@ -774,84 +774,92 @@ html, body {
   }
 }
 /* ============================= */
-/* 🧭 상단 헤더 & 드롭다운 메뉴 */
+/* 🧭 상단 헤더 네비게이션 */
 /* ============================= */
 .main-header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  background: white;
+  background: rgba(15, 15, 15, 0.95);
+  backdrop-filter: blur(10px);
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 15px 0;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px 0;
   z-index: 2000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .nav {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 24px;
+}
+
+.nav-logo {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #ffffff !important;
+  text-decoration: none;
+  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nav-links {
+  display: flex;
   gap: 40px;
   align-items: center;
-  font-weight: 600;
-  font-size: 1rem;
 }
 
-.nav a {
-  color: #333;
+.nav-links a {
+  color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
-  transition: color 0.2s;
-}
-
-.nav a:hover {
-  color: #0066ff;
-}
-
-/* ✅ 드롭다운 메뉴 전체 hover 유지 */
-.dropdown {
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
   position: relative;
-  display: inline-block;
 }
 
-.dropbtn {
-  background: none;
-  border: none;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  color: #333;
-  padding: 8px 16px;
+.nav-links a:hover {
+  color: #ffffff;
 }
 
-/* ✅ hover 범위를 확장해서 사라지지 않게 */
-.dropdown:hover .dropdown-content,
-.dropdown-content:hover {
-  display: block;
-}
-
-.dropdown-content {
-  display: none;
+.nav-links a::after {
+  content: '';
   position: absolute;
-  top: 35px;
+  bottom: -4px;
   left: 0;
-  background: white;
-  min-width: 200px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  overflow: hidden;
-  z-index: 3000;
-  transition: opacity 0.2s ease;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  transition: width 0.3s ease;
 }
 
-.dropdown-content a {
-  display: block;
-  padding: 12px 20px;
-  color: #333;
-  text-decoration: none;
-  transition: background 0.2s;
+.nav-links a:hover::after {
+  width: 100%;
 }
 
-.dropdown-content a:hover {
-  background: #f0f0f0;
+/* 반응형 헤더 */
+@media (max-width: 768px) {
+  .main-header {
+    padding: 16px 0;
+  }
+
+  .nav-logo {
+    font-size: 1.1rem;
+  }
+
+  .nav-links {
+    gap: 24px;
+  }
+
+  .nav-links a {
+    font-size: 0.9rem;
+  }
 }
