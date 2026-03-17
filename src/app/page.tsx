@@ -128,8 +128,17 @@ export default function Home() {
   const [showTop, setShowTop] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [form, setForm] = useState({
-    name: "", phone: "", industry: "", message: "", agree: false,
+    name: "", phone: "", industry: "", services: [] as string[], message: "", agree: false,
   });
+
+  const toggleService = (svc: string) => {
+    setForm((prev) => ({
+      ...prev,
+      services: prev.services.includes(svc)
+        ? prev.services.filter((s) => s !== svc)
+        : [...prev.services, svc],
+    }));
+  };
 
   const heroRef = useRef<HTMLElement>(null);
 
@@ -639,6 +648,35 @@ export default function Home() {
                   <option>기타</option>
                 </select>
               </div>
+              {/* ── 원하는 서비스 체크박스 ── */}
+              <div className="form-group">
+                <label>원하는 서비스 <span className="label-sub">(복수 선택 가능)</span></label>
+                <div className="service-checks">
+                  {[
+                    { id: "svc1", icon: "📊", label: "Meta · Google 광고 집행" },
+                    { id: "svc2", icon: "🎨", label: "광고 소재 기획·제작" },
+                    { id: "svc3", icon: "🖥️", label: "전환 중심 랜딩페이지" },
+                    { id: "svc4", icon: "🌐", label: "홈페이지·웹사이트 구축" },
+                    { id: "svc5", icon: "⚙️", label: "CRM 세팅 · DB 자동화" },
+                    { id: "svc6", icon: "✍️", label: "네이버 블로그·플레이스 관리" },
+                  ].map((svc) => {
+                    const checked = form.services.includes(svc.label);
+                    return (
+                      <button
+                        key={svc.id}
+                        type="button"
+                        className={`svc-chip${checked ? " checked" : ""}`}
+                        onClick={() => toggleService(svc.label)}
+                      >
+                        <span className="svc-chip-icon">{svc.icon}</span>
+                        {svc.label}
+                        {checked && <span className="svc-chip-tick">✓</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               <div className="form-group">
                 <label>현재 고민</label>
                 <textarea
@@ -1668,6 +1706,62 @@ export default function Home() {
         .form-group textarea::placeholder {
           color: rgba(255,255,255,0.3);
         }
+        /* 서비스 선택 칩 */
+        .label-sub {
+          font-size: 0.78rem;
+          color: #666;
+          font-weight: 400;
+          margin-left: 6px;
+        }
+        .service-checks {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 10px;
+        }
+        .svc-chip {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 12px 16px;
+          background: rgba(255,255,255,0.04);
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 10px;
+          color: #aaa;
+          font-size: 0.9rem;
+          font-weight: 500;
+          font-family: inherit;
+          cursor: pointer;
+          transition: all 0.22s ease;
+          text-align: left;
+          position: relative;
+        }
+        .svc-chip:hover {
+          border-color: rgba(255,107,53,0.4);
+          color: #e0e0e0;
+          background: rgba(255,107,53,0.06);
+        }
+        .svc-chip.checked {
+          border-color: #FF6B35;
+          background: rgba(255,107,53,0.12);
+          color: #ffffff;
+          font-weight: 700;
+          box-shadow: 0 0 0 1px rgba(255,107,53,0.3);
+        }
+        .svc-chip-icon {
+          font-size: 1.1rem;
+          flex-shrink: 0;
+        }
+        .svc-chip-tick {
+          margin-left: auto;
+          color: #FF6B35;
+          font-size: 0.85rem;
+          font-weight: 900;
+          flex-shrink: 0;
+        }
+        @media (max-width: 480px) {
+          .service-checks { grid-template-columns: 1fr; }
+        }
+
         .form-agree {
           display: flex;
           align-items: flex-start;
