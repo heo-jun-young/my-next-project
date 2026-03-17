@@ -180,9 +180,9 @@ export default function Home() {
         .from(".hero-btns",   { opacity: 0, y: 30, duration: 0.8 }, "-=0.5")
         .from(".hero-scroll-hint", { opacity: 0, duration: 0.6 }, "-=0.2");
 
-      /* Hero parallax */
-      gsap.to(".hero-bg-layer", {
-        yPercent: 28,
+      /* Hero parallax (배경은 CSS animation 좌우 이동 중이므로 Y축만 살짝) */
+      gsap.to(".hero-overlay", {
+        yPercent: 15,
         ease: "none",
         scrollTrigger: {
           trigger: ".hero-section",
@@ -271,8 +271,8 @@ export default function Home() {
         <div className="hero-content">
           <span className="hero-label">GROW MARKETING</span>
           <h1 className="hero-h1">
-            <span className="line1">광고만 돌리면</span>
-            <span className="line2">매출이 오를까요?</span>
+            <span className="line1">이야기의 주인공은</span>
+            <span className="line2">당신입니다.</span>
           </h1>
           <p className="hero-sub">
             노출 → 유입 → 전환 → 재구매<br />
@@ -354,7 +354,6 @@ export default function Home() {
               { en: "Exposure", kr: "노출", desc: "검색·SNS·광고에서 브랜드를 발견" },
               { en: "Traffic", kr: "유입", desc: "관심을 갖고 랜딩페이지에 방문" },
               { en: "Conversion", kr: "전환", desc: "문의·예약·구매 행동 발생" },
-              { en: "Retention", kr: "재구매", desc: "CRM으로 고객이 다시 돌아옴" },
             ].map((step, i) => (
               <div key={step.en} className="funnel-item">
                 <div className="funnel-box">
@@ -362,7 +361,7 @@ export default function Home() {
                   <span className="funnel-kr">{step.kr}</span>
                 </div>
                 <p className="funnel-desc">{step.desc}</p>
-                {i < 3 && <div className="funnel-arrow">→</div>}
+                {i < 2 && <div className="funnel-arrow">→</div>}
               </div>
             ))}
           </div>
@@ -799,23 +798,44 @@ export default function Home() {
         }
         .hero-bg-layer {
           position: absolute;
-          inset: -20%;
+          /* 좌우 움직임을 위해 가로를 넉넉하게 */
+          top: -20%;
+          bottom: -20%;
+          left: -10%;
+          right: -10%;
           /* 기본: /images/hero-bg.jpg (public/images/ 폴더에 이미지를 추가해주세요) */
           background-image: url('/images/hero-bg.jpg'),
             url('https://cdn.imweb.me/thumbnail/20250925/e6b9c1091f721.png');
-          background-size: cover;
-          background-position: center;
-          will-change: transform;
+          background-size: 120% auto;
+          background-repeat: no-repeat;
+          background-position: center center;
+          animation: heroPan 20s ease-in-out infinite;
+          will-change: background-position;
+        }
+        @keyframes heroPan {
+          0%   { background-position: 50% center; }
+          50%  { background-position: 20% center; }
+          100% { background-position: 50% center; }
+        }
+        @media (max-width: 768px) {
+          .hero-bg-layer {
+            background-size: cover;
+            animation: heroPanMobile 20s ease-in-out infinite;
+          }
+          @keyframes heroPanMobile {
+            0%   { background-position: center center; }
+            50%  { background-position: 30% center; }
+            100% { background-position: center center; }
+          }
         }
         .hero-overlay {
           position: absolute;
           inset: 0;
-          background: rgba(0,0,0,0.58);
           background: linear-gradient(
             to bottom,
-            rgba(0,0,0,0.55) 0%,
-            rgba(0,0,0,0.45) 60%,
-            rgba(10,10,10,0.85) 100%
+            rgba(0,0,0,0.32) 0%,
+            rgba(0,0,0,0.25) 55%,
+            rgba(10,10,10,0.65) 100%
           );
         }
         .hero-content {
