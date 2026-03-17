@@ -1,1097 +1,1923 @@
 "use client";
 
-import { useEffect } from "react";
-import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
+import "aos/dist/aos.css";
 
+/* ================================================================
+   Data constants
+================================================================ */
+const PAIN_POINTS = [
+  { no: "01", text: "블로그·플레이스 올려도 전화 한 통 없다" },
+  { no: "02", text: "광고비는 매달 나가는데 매출은 제자리" },
+  { no: "03", text: "홈페이지 만들었는데 문의가 0건" },
+  { no: "04", text: "대행사 3번 바꿨는데 결과는 똑같다" },
+  { no: "05", text: "뭘 먼저 해야 할지 모르겠다" },
+];
+
+const SERVICES = [
+  {
+    icon: "📊",
+    title: "Meta · Google 광고 집행",
+    desc: "타겟 설정부터 소재 테스트, 예산 최적화까지. 광고비 대비 최대 전환을 만듭니다.",
+    tag: "AD OPERATION",
+  },
+  {
+    icon: "🎨",
+    title: "광고 소재 기획·제작",
+    desc: "클릭을 부르는 카피와 크리에이티브. 업종별 전환율 높은 소재를 직접 만듭니다.",
+    tag: "CREATIVE",
+  },
+  {
+    icon: "🖥️",
+    title: "전환 중심 랜딩페이지",
+    desc: "예쁘기만 한 페이지 NO. 방문자를 고객으로 바꾸는 구조 설계 랜딩페이지.",
+    tag: "LANDING PAGE",
+  },
+  {
+    icon: "🌐",
+    title: "홈페이지·웹사이트 구축",
+    desc: "브랜드 신뢰도를 높이는 고퀄리티 웹사이트. 반응형·SEO 기본 적용.",
+    tag: "WEB BUILD",
+  },
+  {
+    icon: "⚙️",
+    title: "CRM 세팅 · DB 자동화",
+    desc: "문의 DB 자동 수집, 고객 분류, 리마인드 발송까지. 놓치는 고객 0명.",
+    tag: "CRM",
+  },
+  {
+    icon: "✍️",
+    title: "네이버 블로그·플레이스 관리",
+    desc: "검색 상위 노출 + 방문 유도. 꾸준한 콘텐츠로 자연 유입을 만듭니다.",
+    tag: "CONTENT",
+  },
+];
+
+const PROCESS_STEPS = [
+  {
+    num: "01",
+    title: "현재 마케팅 구조 진단",
+    desc: "지금 뭐가 되고, 뭐가 안 되는지 정확히 파악합니다. 광고 계정, 웹사이트, 검색 노출, 전환 경로를 전수 분석합니다.",
+  },
+  {
+    num: "02",
+    title: "매출 구조 설계",
+    desc: "진단 결과를 기반으로 노출-유입-전환-재구매 전체 퍼널을 설계합니다. 어디서 새는지, 어디를 막아야 하는지 구조도를 그립니다.",
+  },
+  {
+    num: "03",
+    title: "광고·콘텐츠·웹 통합 실행",
+    desc: "광고 소재 제작, 랜딩페이지 구축, 블로그·플레이스 세팅, CRM 연동까지 한 번에 실행합니다.",
+  },
+  {
+    num: "04",
+    title: "데이터 기반 지속 최적화",
+    desc: "주간/월간 데이터를 분석하고, 전환율이 높은 방향으로 계속 개선합니다. 광고비는 줄이고 매출은 올리는 구조.",
+  },
+];
+
+const INDUSTRIES = [
+  "피트니스", "필라테스", "병원·의원", "뷰티·에스테틱",
+  "카페·음식점", "학원·교육", "인테리어", "쇼핑몰",
+  "부동산", "법률사무소", "스타트업", "프랜차이즈",
+];
+
+const STATS = [
+  { count: "200", suffix: "+", label: "마케팅 프로젝트 수행", prefix: "" },
+  { count: "150", suffix: "%", label: "평균 문의량 증가율", prefix: "" },
+  { count: "3.2", suffix: "배", label: "광고 ROAS 평균", prefix: "", isFloat: true },
+  { count: "97", suffix: "%", label: "고객 재계약율", prefix: "" },
+];
+
+const COMPARISON = [
+  ["블로그만 or 광고만", "노출~재구매 풀퍼널 통합"],
+  ["실행만 하고 끝", "진단 → 설계 → 실행 → 최적화"],
+  ["리포트만 보내줌", "매출 구조 자체를 만들어줌"],
+  ["여러 업체에 분산 의뢰", "한 팀이 전부 일관되게"],
+  ["전환 추적 안 됨", "CRM·DB 자동화까지 세팅"],
+  ["템플릿 홈페이지", "전환 설계된 맞춤 랜딩"],
+];
+
+const TESTIMONIALS = [
+  {
+    name: "피트니스 센터 원장",
+    industry: "피트니스",
+    text: "3개월 만에 신규 회원이 2배 이상 늘었습니다. 광고만 돌리는 게 아니라 전체 구조를 잡아준다는 게 무슨 의미인지 직접 체감했어요.",
+  },
+  {
+    name: "뷰티샵 대표",
+    industry: "뷰티",
+    text: "이전 대행사는 리포트만 보내줬는데 그로우는 매주 미팅해서 뭘 어떻게 개선할지 같이 고민해줬어요. 예약률이 확실히 달라졌습니다.",
+  },
+  {
+    name: "학원 원장",
+    industry: "교육",
+    text: "홈페이지도 만들고 광고도 돌리고 블로그도 관리해주는데 한 팀에서 다 된다는 게 너무 편합니다. 소통도 훨씬 빠르고요.",
+  },
+];
+
+/* ================================================================
+   Main Component
+================================================================ */
 export default function Home() {
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [showTop, setShowTop] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [form, setForm] = useState({
+    name: "", phone: "", industry: "", message: "", agree: false,
+  });
+
+  const heroRef = useRef<HTMLElement>(null);
+
+  /* ---- GSAP + AOS + Lenis + Scroll ---- */
   useEffect(() => {
-    // 스크롤 애니메이션
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: "0px 0px -50px 0px",
+    /* Scroll progress & back-to-top */
+    const onScroll = () => {
+      const scrollTop = window.scrollY;
+      const docH = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(docH > 0 ? (scrollTop / docH) * 100 : 0);
+      setShowTop(scrollTop > 600);
     };
+    window.addEventListener("scroll", onScroll, { passive: true });
 
-    const observer = new IntersectionObserver((entries) => {
+    /* Counter animation */
+    const counters = document.querySelectorAll<HTMLElement>("[data-count]");
+    const counterObs = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const el = entry.target as HTMLElement;
-          el.style.opacity = "1";
-          el.style.transform = "translateY(0)";
-        }
+        if (!entry.isIntersecting) return;
+        const el = entry.target as HTMLElement;
+        const target = parseFloat(el.dataset.count ?? "0");
+        const suffix = el.dataset.suffix ?? "";
+        const isFloat = el.dataset.float === "true";
+        let current = 0;
+        const step = target / 60;
+        const timer = setInterval(() => {
+          current = Math.min(current + step, target);
+          el.textContent = (isFloat ? current.toFixed(1) : Math.floor(current).toLocaleString()) + suffix;
+          if (current >= target) clearInterval(timer);
+        }, 25);
+        counterObs.unobserve(el);
       });
-    }, observerOptions);
+    }, { threshold: 0.5 });
+    counters.forEach((c) => counterObs.observe(c));
 
-    const animatedElements = document.querySelectorAll<HTMLElement>(".fade-up");
-    animatedElements.forEach((el, index) => {
-      el.style.opacity = "0";
-      el.style.transform = "translateY(40px)";
-      el.style.transition = `all 0.7s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.05}s`;
-      observer.observe(el);
-    });
+    /* GSAP hero animation */
+    const initGSAP = async () => {
+      const gsap = (await import("gsap")).default;
+      const { ScrollTrigger } = await import("gsap/ScrollTrigger");
+      gsap.registerPlugin(ScrollTrigger);
 
-    // 숫자 카운터 애니메이션
-    const counters = document.querySelectorAll<HTMLElement>(".counter-value");
-    const counterObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const el = entry.target as HTMLElement;
-            const target = parseInt(el.dataset.target || "0");
-            const suffix = el.dataset.suffix || "";
-            let current = 0;
-            const increment = target / 50;
-            const timer = setInterval(() => {
-              current += increment;
-              if (current >= target) {
-                el.textContent = target.toLocaleString() + suffix;
-                clearInterval(timer);
-              } else {
-                el.textContent = Math.floor(current).toLocaleString() + suffix;
-              }
-            }, 30);
-            counterObserver.unobserve(el);
-          }
-        });
-      },
-      { threshold: 0.5 }
-    );
+      /* Hero text entrance */
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      tl.from(".hero-label",   { opacity: 0, y: 30, duration: 0.7, delay: 0.2 })
+        .from(".hero-h1 .line1", { opacity: 0, y: 60, duration: 1 }, "-=0.3")
+        .from(".hero-h1 .line2", { opacity: 0, y: 60, duration: 1 }, "-=0.7")
+        .from(".hero-sub",    { opacity: 0, y: 30, duration: 0.8 }, "-=0.5")
+        .from(".hero-btns",   { opacity: 0, y: 30, duration: 0.8 }, "-=0.5")
+        .from(".hero-scroll-hint", { opacity: 0, duration: 0.6 }, "-=0.2");
 
-    counters.forEach((counter) => counterObserver.observe(counter));
-
-    // 카드 호버 효과
-    const cards = document.querySelectorAll<HTMLElement>(".hover-lift");
-    cards.forEach((card) => {
-      card.addEventListener("mouseenter", () => {
-        card.style.transform = "translateY(-8px)";
+      /* Hero parallax */
+      gsap.to(".hero-bg-layer", {
+        yPercent: 28,
+        ease: "none",
+        scrollTrigger: {
+          trigger: ".hero-section",
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
       });
-      card.addEventListener("mouseleave", () => {
-        card.style.transform = "translateY(0)";
+
+      /* Section big text zoom-in */
+      gsap.from(".solution-big-text", {
+        scale: 0.85,
+        opacity: 0,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: ".solution-big-text",
+          start: "top 80%",
+          end: "top 40%",
+          scrub: 1,
+        },
       });
-    });
+
+      /* Process steps stagger */
+      gsap.from(".process-item", {
+        opacity: 0,
+        x: (i) => (i % 2 === 0 ? -60 : 60),
+        duration: 0.9,
+        stagger: 0.15,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".process-list",
+          start: "top 75%",
+        },
+      });
+    };
+    initGSAP();
+
+    /* AOS */
+    const initAOS = async () => {
+      const AOS = (await import("aos")).default;
+      AOS.init({ duration: 750, once: true, offset: 80, easing: "ease-out-cubic" });
+    };
+    initAOS();
+
+    /* Lenis smooth scroll */
+    const initLenis = async () => {
+      const Lenis = (await import("lenis")).default;
+      const lenis = new Lenis({ duration: 1.3 });
+      const raf = (time: number) => { lenis.raf(time); requestAnimationFrame(raf); };
+      requestAnimationFrame(raf);
+    };
+    initLenis();
 
     return () => {
-      observer.disconnect();
-      counterObserver.disconnect();
+      window.removeEventListener("scroll", onScroll);
+      counterObs.disconnect();
     };
   }, []);
 
+  const scrollTo = (id: string) =>
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.agree) { alert("개인정보 수집·이용에 동의해 주세요."); return; }
+    setFormSubmitted(true);
+  };
+
+  /* ================================================================
+     RENDER
+  ================================================================ */
   return (
-    <div className="main-page">
-      {/* 히어로 섹션 - 기존 움직이는 이미지 유지 */}
-      <section className="hero-section">
-        <div className="hero-content fade-up">
-          <h1 className="hero-title">
-            이야기의 주인공은
-            <br />
-            언제나 당신입니다.
+    <div className="page-wrap">
+      {/* ── Scroll progress bar ── */}
+      <div className="scroll-progress-bar" style={{ width: `${scrollProgress}%` }} />
+
+      {/* ══════════════════════════════════════════════════
+          SECTION 1 — HERO
+      ══════════════════════════════════════════════════ */}
+      <section className="hero-section" ref={heroRef}>
+        {/* 배경 레이어 (패럴랙스 타겟) */}
+        <div className="hero-bg-layer" />
+        {/* 오버레이 */}
+        <div className="hero-overlay" />
+
+        <div className="hero-content">
+          <span className="hero-label">GROW MARKETING</span>
+          <h1 className="hero-h1">
+            <span className="line1">광고만 돌리면</span>
+            <span className="line2">매출이 오를까요?</span>
           </h1>
-          <p className="hero-description">
-            그로우마케팅은 브랜드가 아닌
-            <br />
-            고객을 먼저 바라봅니다.
-            <br />
-            당신의 도전과 성장을 완성하는
-            <br />
-            든든한 파트너가 되겠습니다.
+          <p className="hero-sub">
+            노출 → 유입 → 전환 → 재구매<br />
+            이 구조가 없으면, 광고비는 그냥 사라집니다.<br />
+            그로우마케팅이 처음부터 끝까지 설계합니다.
           </p>
-          <div className="hero-cta">
-            <Link href="/contact" className="hero-button primary">
-              무료 상담 신청
-            </Link>
-            <Link href="/portfolio" className="hero-button secondary">
+          <div className="hero-btns">
+            <button className="btn-primary" onClick={() => scrollTo("contact")}>
+              무료 마케팅 진단 받기
+            </button>
+            <button className="btn-outline" onClick={() => scrollTo("results")}>
               성공 사례 보기
-            </Link>
+            </button>
           </div>
         </div>
-        <div className="scroll-indicator">
+
+        <div className="hero-scroll-hint" onClick={() => scrollTo("pain")}>
           <div className="scroll-mouse">
-            <div className="scroll-wheel"></div>
+            <div className="scroll-wheel" />
           </div>
           <span>Scroll</span>
         </div>
       </section>
 
-      {/* 문제 제기 섹션 */}
-      <section className="problem-section">
+      {/* ══════════════════════════════════════════════════
+          SECTION 2 — PAIN POINT
+      ══════════════════════════════════════════════════ */}
+      <section id="pain" className="pain-section">
         <div className="container">
-          <span className="section-label fade-up">PROBLEM</span>
-          <h2 className="section-title fade-up">
-            이런 경험, 한 번쯤 있지 않습니까?
+          <span className="section-label" data-aos="fade-up">WHY NOT WORKING?</span>
+          <h2 className="section-title" data-aos="fade-up" data-aos-delay="80">
+            이런 고민, 계속 반복되고 있지 않나요?
           </h2>
-          <div className="problem-grid">
-            <div className="problem-card hover-lift fade-up">
-              <div className="problem-number">01</div>
-              <h4>광고비는 나가는데 문의가 없다</h4>
-              <p>
-                매달 수백만 원 광고비를 쓰지만 정작 매출로 연결되지 않는다.
-                어디서 새는지도 모른다.
-              </p>
-            </div>
-            <div className="problem-card hover-lift fade-up">
-              <div className="problem-number">02</div>
-              <h4>대행사가 뭘 하는지 모르겠다</h4>
-              <p>
-                월간 리포트는 오는데 숫자만 나열되어 있다. 그래서 뭘 어떻게
-                개선한다는 건지 알 수가 없다.
-              </p>
-            </div>
-            <div className="problem-card hover-lift fade-up">
-              <div className="problem-number">03</div>
-              <h4>업종 이해 없이 템플릿 마케팅</h4>
-              <p>
-                헬스장이든 음식점이든 똑같은 방식. 우리 업종 특성은 전혀 고려되지
-                않는다.
-              </p>
-            </div>
-            <div className="problem-card hover-lift fade-up">
-              <div className="problem-number">04</div>
-              <h4>단기 성과에만 집착한다</h4>
-              <p>
-                당장 클릭수, 노출수만 보여주고 끝. 장기적인 브랜드 자산 구축은
-                전혀 없다.
-              </p>
-            </div>
+
+          <div className="pain-list">
+            {PAIN_POINTS.map((p, i) => (
+              <div
+                key={p.no}
+                className="pain-item"
+                data-aos="fade-up"
+                data-aos-delay={i * 80}
+              >
+                <span className="pain-no">{p.no}</span>
+                <p className="pain-text">"{p.text}"</p>
+                <span className="pain-check">✗</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="pain-conclusion" data-aos="fade-up">
+            <p>
+              문제는 <em>'마케팅'</em>이 아닙니다.<br />
+              매출이 만들어지는 <em>'구조'</em>가 없는 겁니다.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* 솔루션 섹션 */}
+      {/* ══════════════════════════════════════════════════
+          SECTION 3 — SOLUTION DECLARATION
+      ══════════════════════════════════════════════════ */}
       <section className="solution-section">
+        <div className="solution-glow" />
         <div className="container">
-          <span className="section-label fade-up">SOLUTION</span>
-          <h2 className="section-title fade-up">
-            그로우마케팅의 접근법은 다릅니다
-          </h2>
-          <p className="section-desc fade-up">
-            단순 광고 대행이 아닌, 비즈니스 성장 파트너로서 전략을 설계합니다.
+          <p className="solution-big-text">
+            노출부터 재구매까지<br />
+            한 팀이 전부 설계합니다.
           </p>
-          <div className="solution-grid">
-            <div className="solution-card hover-lift fade-up">
-              <div className="solution-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
+          <p className="solution-sub" data-aos="fade-up">
+            그로우마케팅은 단순 대행사가 아닙니다.<br />
+            고객이 브랜드를 <strong>'발견'</strong>하고, <strong>'관심'</strong>을 갖고,{" "}
+            <strong>'구매'</strong>하고, <strong>'다시 찾아오는'</strong><br />
+            전체 여정을 하나의 시스템으로 구축합니다.
+          </p>
+
+          {/* 퍼널 다이어그램 */}
+          <div className="funnel-flow" data-aos="fade-up" data-aos-delay="100">
+            {[
+              { en: "Exposure", kr: "노출", desc: "검색·SNS·광고에서 브랜드를 발견" },
+              { en: "Traffic", kr: "유입", desc: "관심을 갖고 랜딩페이지에 방문" },
+              { en: "Conversion", kr: "전환", desc: "문의·예약·구매 행동 발생" },
+              { en: "Retention", kr: "재구매", desc: "CRM으로 고객이 다시 돌아옴" },
+            ].map((step, i) => (
+              <div key={step.en} className="funnel-item">
+                <div className="funnel-box">
+                  <span className="funnel-en">{step.en}</span>
+                  <span className="funnel-kr">{step.kr}</span>
+                </div>
+                <p className="funnel-desc">{step.desc}</p>
+                {i < 3 && <div className="funnel-arrow">→</div>}
               </div>
-              <h4>데이터 기반 의사결정</h4>
-              <p>
-                감이 아닌 데이터로 움직입니다. ROAS, CPA, LTV 등 핵심 지표를
-                실시간 추적하고, 수치에 기반한 최적화를 진행합니다.
-              </p>
-            </div>
-            <div className="solution-card hover-lift fade-up">
-              <div className="solution-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                  <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
-                </svg>
-              </div>
-              <h4>업종 전문 마케터 배치</h4>
-              <p>
-                헬스장에는 헬스장 전문가, 병원에는 의료 마케팅 전문가. 각 업종의
-                고객 심리와 구매 여정을 이해하는 전문 마케터가 직접 담당합니다.
-              </p>
-            </div>
-            <div className="solution-card hover-lift fade-up">
-              <div className="solution-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                </svg>
-              </div>
-              <h4>투명한 리포팅 시스템</h4>
-              <p>
-                광고비 어디에 얼마 썼는지, 성과가 어땠는지. 대시보드로 실시간
-                확인하고, 주간 미팅으로 개선 방향을 함께 논의합니다.
-              </p>
-            </div>
-            <div className="solution-card hover-lift fade-up">
-              <div className="solution-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M12 6v6l4 2" />
-                </svg>
-              </div>
-              <h4>장기 자산 구축 전략</h4>
-              <p>
-                광고만 돌리다 끝나는 게 아닙니다. SEO 콘텐츠, 고객 DB, 브랜드
-                인지도까지. 광고비를 끊어도 남는 자산을 만듭니다.
-              </p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* 서비스 섹션 */}
-      <section className="services-section">
+      {/* ══════════════════════════════════════════════════
+          SECTION 4 — SERVICES
+      ══════════════════════════════════════════════════ */}
+      <section id="services" className="services-section">
         <div className="container">
-          <span className="section-label fade-up">SERVICES</span>
-          <h2 className="section-title fade-up">제공 서비스</h2>
-          <p className="section-desc fade-up">
-            비즈니스 성장에 필요한 모든 마케팅 서비스를 제공합니다.
+          <span className="section-label" data-aos="fade-up">FULL-STACK SERVICE</span>
+          <h2 className="section-title" data-aos="fade-up" data-aos-delay="80">
+            광고부터 시스템까지, 전부 한 팀이 합니다.
+          </h2>
+          <p className="section-desc" data-aos="fade-up" data-aos-delay="140">
+            6가지 핵심 서비스를 하나의 팀에서 통합 운영합니다.
           </p>
 
           <div className="services-grid">
-            <Link href="/services/sns" className="service-card hover-lift fade-up">
-              <div className="service-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                  <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" />
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                </svg>
+            {SERVICES.map((s, i) => (
+              <div
+                key={s.title}
+                className="service-card"
+                data-aos="fade-up"
+                data-aos-delay={i * 70}
+              >
+                <div className="sc-tag">{s.tag}</div>
+                <div className="sc-icon">{s.icon}</div>
+                <h3 className="sc-title">{s.title}</h3>
+                <p className="sc-desc">{s.desc}</p>
+                <div className="sc-glow" />
               </div>
-              <h4>SNS 광고</h4>
-              <p>
-                네이버, 메타, 구글, 카카오 등 주요 플랫폼에서 ROAS를 극대화하는
-                퍼포먼스 마케팅
-              </p>
-              <span className="service-link">
-                자세히 보기
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </span>
-            </Link>
-
-            <Link href="/services/website" className="service-card hover-lift fade-up">
-              <div className="service-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-                  <line x1="8" y1="21" x2="16" y2="21" />
-                  <line x1="12" y1="17" x2="12" y2="21" />
-                </svg>
-              </div>
-              <h4>홈페이지 제작</h4>
-              <p>
-                단순히 예쁜 사이트가 아닌, 전환율을 높이는 홈페이지. 업종별
-                맞춤 설계 및 데이터 분석 연동
-              </p>
-              <span className="service-link">
-                자세히 보기
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </span>
-            </Link>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* 업종별 전문성 섹션 */}
-      <section className="industry-section">
+      {/* ══════════════════════════════════════════════════
+          SECTION 5 — PROCESS
+      ══════════════════════════════════════════════════ */}
+      <section id="process" className="process-section">
         <div className="container">
-          <span className="section-label fade-up">EXPERTISE</span>
-          <h2 className="section-title fade-up">업종별 맞춤 전략</h2>
-          <p className="section-desc fade-up">
-            템플릿 마케팅은 하지 않습니다. 각 업종의 고객 심리와 구매 여정에
-            최적화된 전략을 설계합니다.
+          <span className="section-label" data-aos="fade-up">PROCESS</span>
+          <h2 className="section-title" data-aos="fade-up" data-aos-delay="80">
+            체계적인 4단계 프로세스
+          </h2>
+          <p className="section-desc" data-aos="fade-up" data-aos-delay="140">
+            감이 아닌 데이터로, 구조로, 시스템으로 매출을 만듭니다.
           </p>
 
-          <div className="industry-grid">
-            <div className="industry-card hover-lift fade-up">
-              <div className="industry-emoji">🏋️</div>
-              <h4>헬스장 / 필라테스</h4>
-              <p>무료 체험 전환 최적화, 지역 타겟팅</p>
-              <div className="industry-result">평균 신규 회원 +180%</div>
-            </div>
-            <div className="industry-card hover-lift fade-up">
-              <div className="industry-emoji">🍽️</div>
-              <h4>음식점 / 카페</h4>
-              <p>인스타그램 감성 콘텐츠, 리뷰 관리</p>
-              <div className="industry-result">평균 매출 +95%</div>
-            </div>
-            <div className="industry-card hover-lift fade-up">
-              <div className="industry-emoji">🏠</div>
-              <h4>부동산 / 인테리어</h4>
-              <p>시공 포트폴리오, 상담 전환 최적화</p>
-              <div className="industry-result">평균 문의량 +220%</div>
-            </div>
-            <div className="industry-card hover-lift fade-up">
-              <div className="industry-emoji">💅</div>
-              <h4>뷰티 / 네일샵</h4>
-              <p>인스타그램 릴스, 비포/애프터 콘텐츠</p>
-              <div className="industry-result">평균 예약률 +150%</div>
-            </div>
-            <div className="industry-card hover-lift fade-up">
-              <div className="industry-emoji">📚</div>
-              <h4>학원 / 교육</h4>
-              <p>합격 후기 콘텐츠, 학부모 타겟 광고</p>
-              <div className="industry-result">평균 등록률 +130%</div>
-            </div>
-            <div className="industry-card hover-lift fade-up">
-              <div className="industry-emoji">🏥</div>
-              <h4>병원 / 의원</h4>
-              <p>의료 정보 콘텐츠, 전문의 브랜딩</p>
-              <div className="industry-result">평균 예약률 +175%</div>
-            </div>
+          <div className="process-list">
+            {PROCESS_STEPS.map((step, i) => (
+              <div key={step.num} className={`process-item ${i % 2 === 1 ? "reverse" : ""}`}>
+                <div className="pi-number-wrap">
+                  <div className="pi-circle">
+                    <span className="pi-num">STEP {step.num}</span>
+                  </div>
+                  {i < 3 && <div className="pi-line" />}
+                </div>
+                <div className="pi-content">
+                  <h3 className="pi-title">{step.title}</h3>
+                  <p className="pi-desc">{step.desc}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* 성과 지표 섹션 */}
-      <section className="stats-section">
+      {/* ══════════════════════════════════════════════════
+          SECTION 6 — INDUSTRIES (MARQUEE)
+      ══════════════════════════════════════════════════ */}
+      <section className="industry-section">
         <div className="container">
+          <span className="section-label" data-aos="fade-up">ALL INDUSTRIES</span>
+          <h2 className="section-title" data-aos="fade-up" data-aos-delay="80">
+            업종은 달라도, 매출의 구조는 같습니다.
+          </h2>
+          <p className="section-desc" data-aos="fade-up" data-aos-delay="140">
+            어떤 업종이든 본질은 하나입니다 — 고객이 발견하고, 관심 갖고, 구매하는 흐름.
+          </p>
+        </div>
+
+        {/* 마키 */}
+        <div className="marquee-wrap" data-aos="fade-up" data-aos-delay="200">
+          <div className="marquee-track">
+            {[...INDUSTRIES, ...INDUSTRIES].map((ind, i) => (
+              <span key={i} className="marquee-tag">{ind}</span>
+            ))}
+          </div>
+        </div>
+
+        <div className="container">
+          <div className="industry-conclusion" data-aos="fade-up">
+            결국 모든 사업의 성장 공식은 같습니다.<br />
+            <strong>노출 → 유입 → 전환 → 재구매</strong><br />
+            그로우마케팅이 이 구조를 만들어 드립니다.
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════
+          SECTION 7 — RESULTS & TRUST
+      ══════════════════════════════════════════════════ */}
+      <section id="results" className="results-section">
+        <div className="results-bg-glow" />
+        <div className="container">
+          <span className="section-label light" data-aos="fade-up">PROVEN RESULTS</span>
+          <h2 className="section-title light" data-aos="fade-up" data-aos-delay="80">
+            숫자가 증명합니다.
+          </h2>
+
           <div className="stats-grid">
-            <div className="stat-item fade-up">
-              <span className="counter-value" data-target="847" data-suffix="%">0%</span>
-              <span className="stat-label">평균 ROAS</span>
-            </div>
-            <div className="stat-item fade-up">
-              <span className="counter-value" data-target="156" data-suffix="+">0+</span>
-              <span className="stat-label">성공 프로젝트</span>
-            </div>
-            <div className="stat-item fade-up">
-              <span className="counter-value" data-target="94" data-suffix="%">0%</span>
-              <span className="stat-label">재계약률</span>
-            </div>
+            {STATS.map((s, i) => (
+              <div key={s.label} className="stat-card" data-aos="zoom-in" data-aos-delay={i * 80}>
+                <div className="stat-number">
+                  <span
+                    className="stat-count"
+                    data-count={s.count}
+                    data-suffix={s.suffix}
+                    data-float={s.isFloat ? "true" : undefined}
+                  >
+                    0{s.suffix}
+                  </span>
+                </div>
+                <p className="stat-label">{s.label}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Swiper 후기 */}
+          <div className="testimonials-wrap" data-aos="fade-up" data-aos-delay="200">
+            <Swiper
+              modules={[Autoplay, Pagination]}
+              autoplay={{ delay: 4000, disableOnInteraction: false }}
+              pagination={{ clickable: true }}
+              spaceBetween={24}
+              slidesPerView={1}
+              breakpoints={{ 768: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } }}
+              className="testi-swiper"
+            >
+              {TESTIMONIALS.map((t, i) => (
+                <SwiperSlide key={i}>
+                  <div className="testi-card">
+                    <div className="testi-stars">★★★★★</div>
+                    <p className="testi-text">"{t.text}"</p>
+                    <div className="testi-author">
+                      <div className="testi-avatar">{t.name[0]}</div>
+                      <div>
+                        <strong>{t.name}</strong>
+                        <span>{t.industry}</span>
+                      </div>
+                    </div>
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+            <p className="testi-note">* 향후 실제 고객 후기로 업데이트 예정</p>
           </div>
         </div>
       </section>
 
-      {/* 왜 그로우마케팅인가 섹션 */}
-      <section className="why-section">
+      {/* ══════════════════════════════════════════════════
+          SECTION 8 — COMPARISON
+      ══════════════════════════════════════════════════ */}
+      <section className="compare-section">
         <div className="container">
-          <span className="section-label fade-up">WHY US</span>
-          <h2 className="section-title fade-up">왜 그로우마케팅입니까?</h2>
+          <h2 className="section-title" data-aos="fade-up">기존 대행사 vs 그로우마케팅</h2>
 
-          <div className="why-grid">
-            <div className="why-card hover-lift fade-up">
-              <div className="why-number">01</div>
-              <h4>투명한 비용 구조</h4>
-              <p>
-                광고비와 대행비를 명확히 분리합니다. 어디에 얼마가 쓰이는지,
-                대시보드로 실시간 확인할 수 있습니다.
-              </p>
+          <div className="compare-table" data-aos="fade-up" data-aos-delay="100">
+            <div className="compare-header">
+              <div className="compare-col bad">기존 대행사</div>
+              <div className="compare-divider" />
+              <div className="compare-col good">그로우마케팅</div>
             </div>
-            <div className="why-card hover-lift fade-up">
-              <div className="why-number">02</div>
-              <h4>전담 마케터 배정</h4>
-              <p>
-                여러 클라이언트를 돌아가며 담당하지 않습니다. 전담 마케터가
-                귀사의 비즈니스를 깊이 이해합니다.
-              </p>
-            </div>
-            <div className="why-card hover-lift fade-up">
-              <div className="why-number">03</div>
-              <h4>주간 성과 미팅</h4>
-              <p>
-                월 1회 리포트로 끝나지 않습니다. 주간 미팅으로 성과를 점검하고,
-                실시간으로 전략을 조정합니다.
-              </p>
-            </div>
-            <div className="why-card hover-lift fade-up">
-              <div className="why-number">04</div>
-              <h4>성과 미달 시 환불</h4>
-              <p>
-                약속한 KPI에 도달하지 못하면, 대행비를 환불합니다. 그만큼 결과에
-                자신 있습니다.
-              </p>
-            </div>
+            {COMPARISON.map(([left, right], i) => (
+              <div key={i} className="compare-row" data-aos="fade-up" data-aos-delay={i * 60}>
+                <div className="compare-cell bad-cell">
+                  <span className="bad-icon">✗</span> {left}
+                </div>
+                <div className="compare-mid-dot" />
+                <div className="compare-cell good-cell">
+                  <span className="good-icon">✓</span> {right}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* CTA 섹션 */}
-      <section className="cta-section">
+      {/* ══════════════════════════════════════════════════
+          SECTION 9 — CTA BANNER
+      ══════════════════════════════════════════════════ */}
+      <section className="cta-banner-section">
+        <div className="cta-banner-bg" />
+        <div className="container cta-banner-inner">
+          <h2 className="cta-banner-title" data-aos="fade-up">
+            지금, 매출이 만들어지는 구조를<br />
+            설계받으세요.
+          </h2>
+          <p className="cta-banner-sub" data-aos="fade-up" data-aos-delay="80">
+            무료 마케팅 진단으로 시작합니다.<br />
+            현재 마케팅의 문제점과 개선 방향을 정확하게 알려드립니다.
+          </p>
+          <button
+            className="cta-banner-btn"
+            onClick={() => scrollTo("contact")}
+            data-aos="fade-up"
+            data-aos-delay="160"
+          >
+            무료 마케팅 진단 신청하기
+          </button>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════
+          SECTION 10 — CONTACT FORM
+      ══════════════════════════════════════════════════ */}
+      <section id="contact" className="contact-section">
         <div className="container">
-          <div className="cta-content fade-up">
-            <h2 className="cta-title">
-              마케팅, 제대로 시작하겠습니다.
-            </h2>
-            <p className="cta-desc">
-              무료 진단을 통해 현재 마케팅의 문제점과 개선 방향을 먼저
-              확인하세요.
-              <br />
-              비용 부담 없이 전문가의 인사이트를 받아보실 수 있습니다.
-            </p>
-            <div className="cta-buttons">
-              <Link href="/contact" className="cta-button primary">
-                무료 마케팅 진단 신청
-              </Link>
-              <Link href="/portfolio" className="cta-button secondary">
-                성공 사례 보기
-              </Link>
+          <span className="section-label" data-aos="fade-up">CONTACT</span>
+          <h2 className="section-title" data-aos="fade-up" data-aos-delay="80">
+            무료 마케팅 진단 신청
+          </h2>
+          <p className="section-desc" data-aos="fade-up" data-aos-delay="140">
+            아래 정보를 남겨주시면 24시간 이내 연락드립니다.
+          </p>
+
+          {formSubmitted ? (
+            <div className="form-success" data-aos="zoom-in">
+              <div className="success-icon">✓</div>
+              <h3>신청이 완료되었습니다.</h3>
+              <p>24시간 이내 연락드리겠습니다.</p>
             </div>
-            <p className="cta-note">
-              * 진단 후 계약 강요 없습니다. 부담 없이 신청하세요.
-            </p>
-          </div>
+          ) : (
+            <form className="contact-form" onSubmit={handleSubmit} data-aos="fade-up" data-aos-delay="200">
+              <div className="form-row">
+                <div className="form-group">
+                  <label>이름 *</label>
+                  <input
+                    type="text"
+                    placeholder="홍길동"
+                    required
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>연락처 *</label>
+                  <input
+                    type="tel"
+                    placeholder="010-0000-0000"
+                    required
+                    value={form.phone}
+                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label>업종 *</label>
+                <select
+                  required
+                  value={form.industry}
+                  onChange={(e) => setForm({ ...form, industry: e.target.value })}
+                >
+                  <option value="">업종을 선택해 주세요</option>
+                  <option>피트니스/필라테스</option>
+                  <option>병원·의원</option>
+                  <option>뷰티</option>
+                  <option>카페·음식점</option>
+                  <option>학원</option>
+                  <option>인테리어</option>
+                  <option>쇼핑몰</option>
+                  <option>기타</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>현재 고민</label>
+                <textarea
+                  rows={5}
+                  placeholder="현재 마케팅에서 가장 어려운 점을 알려주세요"
+                  value={form.message}
+                  onChange={(e) => setForm({ ...form, message: e.target.value })}
+                />
+              </div>
+              <div className="form-agree">
+                <input
+                  type="checkbox"
+                  id="agree"
+                  checked={form.agree}
+                  onChange={(e) => setForm({ ...form, agree: e.target.checked })}
+                />
+                <label htmlFor="agree">
+                  개인정보 수집·이용에 동의합니다. (이름, 연락처 — 상담 목적)
+                </label>
+              </div>
+              <button type="submit" className="form-submit-btn">
+                진단 신청하기
+              </button>
+            </form>
+          )}
         </div>
       </section>
 
+      {/* ══════════════════════════════════════════════════
+          FOOTER
+      ══════════════════════════════════════════════════ */}
+      <footer className="footer">
+        <div className="container footer-inner">
+          <div className="footer-left">
+            <div className="footer-logo">
+              <span className="logo-grow">Grow</span>마케팅
+            </div>
+            <p className="footer-tagline">매출이 만들어지는 구조를 설계합니다.</p>
+            <p className="footer-biz">사업자등록번호: 106-18-63007 | 대표: 허준영</p>
+          </div>
+          <div className="footer-right">
+            <p className="footer-contact-item">📞 전화: (번호 추후 입력)</p>
+            <p className="footer-contact-item">✉️ 이메일: (이메일 추후 입력)</p>
+            <div className="footer-sns">
+              <a href="#" aria-label="인스타그램" className="sns-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <rect x="2" y="2" width="20" height="20" rx="5" />
+                  <circle cx="12" cy="12" r="4" />
+                  <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" />
+                </svg>
+              </a>
+              <a href="#" aria-label="블로그" className="sns-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <path d="M4 4h16v16H4z" rx="2" />
+                  <path d="M8 9h8M8 12h8M8 15h5" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div className="footer-bottom">
+          <p>© 2026 그로우마케팅. All Rights Reserved.</p>
+        </div>
+      </footer>
+
+      {/* ── 맨위로 버튼 ── */}
+      {showTop && (
+        <button className="back-to-top" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+          ↑
+        </button>
+      )}
+
+      {/* ── 모바일 하단 고정 CTA ── */}
+      <div className="mobile-sticky-cta">
+        <button onClick={() => scrollTo("contact")}>
+          무료 진단 신청 →
+        </button>
+      </div>
+
+      {/* ================================================================
+          STYLES
+      ================================================================ */}
       <style jsx>{`
-        .main-page {
-          background: #ffffff;
-          min-height: 100vh;
-          color: #1a1a1a;
-          font-family: "Pretendard", -apple-system, sans-serif;
+        /* ---- Page wrap ---- */
+        .page-wrap {
+          background: #0a0a0a;
+          color: #ffffff;
+          font-family: 'Pretendard', -apple-system, sans-serif;
+          overflow-x: hidden;
         }
 
+        /* ---- Scroll progress ---- */
+        .scroll-progress-bar {
+          position: fixed;
+          top: 0;
+          left: 0;
+          height: 3px;
+          background: linear-gradient(90deg, #FF6B35, #FF8C42, #00C9A7);
+          z-index: 9999;
+          transition: width 0.1s linear;
+          background-size: 200% 100%;
+        }
+
+        /* ---- Container ---- */
         .container {
           max-width: 1200px;
           margin: 0 auto;
-          padding: 0 24px;
+          padding: 0 32px;
         }
 
-        /* 히어로 섹션 - 기존 이미지 유지 */
+        /* ---- Section labels / titles ---- */
+        .section-label {
+          display: block;
+          font-family: 'Montserrat', sans-serif;
+          font-size: 0.78rem;
+          font-weight: 700;
+          letter-spacing: 4px;
+          color: #FF6B35;
+          margin-bottom: 16px;
+          text-align: center;
+        }
+        .section-label.light {
+          color: rgba(255,107,53,0.9);
+        }
+        .section-title {
+          font-size: clamp(1.8rem, 4vw, 2.8rem);
+          font-weight: 800;
+          text-align: center;
+          line-height: 1.3;
+          margin-bottom: 20px;
+          color: #ffffff;
+          word-break: keep-all;
+        }
+        .section-title.light {
+          color: #ffffff;
+        }
+        .section-desc {
+          font-size: 1.05rem;
+          color: #999;
+          text-align: center;
+          max-width: 640px;
+          margin: 0 auto 64px;
+          line-height: 1.8;
+        }
+
+        /* ══════════════════════════════
+           SECTION 1 — HERO
+        ══════════════════════════════ */
         .hero-section {
-          width: 100%;
-          min-height: 100vh;
-          background-image: url('https://cdn.imweb.me/thumbnail/20250925/e6b9c1091f721.png');
-          background-size: 120% auto;
-          background-repeat: no-repeat;
-          background-position: center;
-          animation: moveLeftRight 20s ease-in-out infinite;
           position: relative;
+          height: 100vh;
+          min-height: 700px;
           display: flex;
           align-items: center;
           justify-content: center;
+          overflow: hidden;
         }
-
-        @keyframes moveLeftRight {
-          0% { background-position: 50% center; }
-          50% { background-position: 0% center; }
-          100% { background-position: 50% center; }
+        .hero-bg-layer {
+          position: absolute;
+          inset: -20%;
+          /* 기본: /images/hero-bg.jpg (public/images/ 폴더에 이미지를 추가해주세요) */
+          background-image: url('/images/hero-bg.jpg'),
+            url('https://cdn.imweb.me/thumbnail/20250925/e6b9c1091f721.png');
+          background-size: cover;
+          background-position: center;
+          will-change: transform;
         }
-
+        .hero-overlay {
+          position: absolute;
+          inset: 0;
+          background: rgba(0,0,0,0.58);
+          background: linear-gradient(
+            to bottom,
+            rgba(0,0,0,0.55) 0%,
+            rgba(0,0,0,0.45) 60%,
+            rgba(10,10,10,0.85) 100%
+          );
+        }
         .hero-content {
+          position: relative;
+          z-index: 2;
           text-align: center;
-          z-index: 10;
           padding: 0 24px;
+          max-width: 860px;
         }
-
-        .hero-title {
-          font-size: clamp(2.5rem, 7vw, 5.25rem);
+        .hero-label {
+          display: inline-block;
+          font-family: 'Montserrat', sans-serif;
+          font-size: 0.78rem;
           font-weight: 700;
-          line-height: 1.2;
-          margin-bottom: 30px;
-          color: #ffffff;
-          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+          letter-spacing: 5px;
+          color: #FF6B35;
+          margin-bottom: 24px;
+          padding: 6px 16px;
+          border: 1px solid rgba(255,107,53,0.4);
+          border-radius: 50px;
+          background: rgba(255,107,53,0.08);
         }
-
-        .hero-description {
-          font-size: clamp(1rem, 2.5vw, 1.95rem);
-          color: rgba(255, 255, 255, 0.95);
-          line-height: 1.6;
+        .hero-h1 {
+          font-size: clamp(2.6rem, 6.5vw, 5rem);
+          font-weight: 900;
+          line-height: 1.18;
+          margin-bottom: 32px;
+          word-break: keep-all;
+        }
+        .hero-h1 .line1,
+        .hero-h1 .line2 {
+          display: block;
+        }
+        .hero-h1 .line2 {
+          background: linear-gradient(135deg, #FF6B35, #FF8C42);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        .hero-sub {
+          font-size: clamp(1rem, 2.2vw, 1.2rem);
+          color: rgba(255,255,255,0.82);
+          line-height: 1.9;
           margin-bottom: 48px;
-          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+          word-break: keep-all;
         }
-
-        .hero-cta {
+        .hero-btns {
           display: flex;
           gap: 16px;
           justify-content: center;
           flex-wrap: wrap;
         }
-
-        .hero-button {
-          display: inline-block;
+        .btn-primary {
+          background: linear-gradient(135deg, #FF6B35, #FF8C42);
+          color: #ffffff;
+          border: none;
           padding: 18px 40px;
           border-radius: 50px;
-          font-size: 1.1rem;
-          font-weight: 600;
-          text-decoration: none;
+          font-size: 1.05rem;
+          font-weight: 700;
+          cursor: pointer;
           transition: all 0.3s ease;
+          box-shadow: 0 6px 30px rgba(255,107,53,0.4);
+          font-family: inherit;
         }
-
-        .hero-button.primary {
-          background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        .btn-primary:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 14px 40px rgba(255,107,53,0.55);
+        }
+        .btn-outline {
+          background: transparent;
           color: #ffffff;
-          box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+          border: 2px solid rgba(255,255,255,0.5);
+          padding: 18px 40px;
+          border-radius: 50px;
+          font-size: 1.05rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          backdrop-filter: blur(8px);
+          font-family: inherit;
         }
-
-        .hero-button.primary:hover {
-          transform: translateY(-3px) scale(1.02);
-          box-shadow: 0 8px 30px rgba(99, 102, 241, 0.5);
+        .btn-outline:hover {
+          border-color: #FF6B35;
+          color: #FF6B35;
+          transform: translateY(-4px);
         }
-
-        .hero-button.secondary {
-          background: rgba(255, 255, 255, 0.15);
-          color: #ffffff;
-          border: 2px solid rgba(255, 255, 255, 0.4);
-          backdrop-filter: blur(10px);
-        }
-
-        .hero-button.secondary:hover {
-          background: rgba(255, 255, 255, 0.25);
-          border-color: rgba(255, 255, 255, 0.6);
-          transform: translateY(-3px);
-        }
-
-        .scroll-indicator {
+        .hero-scroll-hint {
           position: absolute;
-          bottom: 40px;
+          bottom: 36px;
           left: 50%;
           transform: translateX(-50%);
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 12px;
-          color: rgba(255, 255, 255, 0.8);
-          font-size: 0.75rem;
+          gap: 10px;
+          cursor: pointer;
+          color: rgba(255,255,255,0.6);
+          font-size: 0.72rem;
+          font-family: 'Montserrat', sans-serif;
           letter-spacing: 2px;
-          animation: bounce 2s infinite;
+          animation: floatY 2s ease-in-out infinite;
+          z-index: 2;
         }
-
         .scroll-mouse {
-          width: 24px;
-          height: 40px;
-          border: 2px solid rgba(255, 255, 255, 0.6);
-          border-radius: 12px;
+          width: 22px;
+          height: 36px;
+          border: 2px solid rgba(255,255,255,0.5);
+          border-radius: 11px;
           position: relative;
         }
-
         .scroll-wheel {
-          width: 4px;
-          height: 8px;
-          background: rgba(255, 255, 255, 0.8);
+          width: 3px;
+          height: 7px;
+          background: rgba(255,255,255,0.7);
           border-radius: 2px;
           position: absolute;
-          top: 8px;
+          top: 5px;
           left: 50%;
           transform: translateX(-50%);
-          animation: scrollWheel 1.5s infinite;
+          animation: scrollWheel 1.6s ease-in-out infinite;
         }
 
-        @keyframes bounce {
-          0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
-          40% { transform: translateX(-50%) translateY(-10px); }
-          60% { transform: translateX(-50%) translateY(-5px); }
-        }
-
-        @keyframes scrollWheel {
-          0% { opacity: 1; top: 8px; }
-          100% { opacity: 0; top: 20px; }
-        }
-
-        /* 공통 섹션 스타일 */
-        section {
+        /* ══════════════════════════════
+           SECTION 2 — PAIN POINT
+        ══════════════════════════════ */
+        .pain-section {
           padding: 120px 0;
+          background: #0a0a0a;
         }
-
-        .section-label {
-          display: block;
-          font-size: 0.85rem;
-          font-weight: 700;
-          letter-spacing: 3px;
-          color: #6366f1;
-          margin-bottom: 16px;
-          text-align: center;
+        .pain-list {
+          max-width: 820px;
+          margin: 56px auto 0;
+          display: flex;
+          flex-direction: column;
+          gap: 0;
         }
-
-        .section-title {
-          font-size: clamp(1.75rem, 4vw, 2.75rem);
-          font-weight: 800;
-          text-align: center;
-          margin-bottom: 20px;
-          color: #1a1a1a;
-        }
-
-        .section-desc {
-          font-size: 1.1rem;
-          color: #666666;
-          text-align: center;
-          max-width: 700px;
-          margin: 0 auto 60px;
-          line-height: 1.8;
-        }
-
-        /* 문제 제기 섹션 */
-        .problem-section {
-          background: #f8f9fc;
-        }
-
-        .problem-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 24px;
-        }
-
-        .problem-card {
-          background: #ffffff;
-          border: 1px solid #eaeaea;
-          border-radius: 20px;
-          padding: 40px;
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-          cursor: default;
-        }
-
-        .problem-card:hover {
-          border-color: #6366f1;
-          box-shadow: 0 20px 40px rgba(99, 102, 241, 0.1);
-        }
-
-        .problem-number {
-          font-size: 0.85rem;
-          font-weight: 800;
-          color: #6366f1;
-          margin-bottom: 16px;
-        }
-
-        .problem-card h4 {
-          font-size: 1.25rem;
-          font-weight: 700;
-          margin-bottom: 12px;
-          color: #1a1a1a;
-        }
-
-        .problem-card p {
-          font-size: 0.95rem;
-          color: #666666;
-          line-height: 1.7;
-        }
-
-        /* 솔루션 섹션 */
-        .solution-section {
-          background: #ffffff;
-        }
-
-        .solution-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 24px;
-        }
-
-        .solution-card {
-          background: linear-gradient(135deg, #f8f9fc 0%, #ffffff 100%);
-          border: 1px solid #eaeaea;
-          border-radius: 20px;
-          padding: 40px;
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .solution-card:hover {
-          border-color: #6366f1;
-          box-shadow: 0 20px 40px rgba(99, 102, 241, 0.1);
-        }
-
-        .solution-icon {
-          width: 56px;
-          height: 56px;
-          background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-          border-radius: 16px;
+        .pain-item {
           display: flex;
           align-items: center;
-          justify-content: center;
-          margin-bottom: 24px;
+          gap: 24px;
+          padding: 24px 32px;
+          border-bottom: 1px solid rgba(255,255,255,0.06);
+          transition: background 0.3s ease;
+          border-radius: 12px;
+        }
+        .pain-item:hover {
+          background: rgba(255,107,53,0.05);
+        }
+        .pain-no {
+          font-family: 'Montserrat', sans-serif;
+          font-size: 0.75rem;
+          font-weight: 700;
+          color: #FF6B35;
+          letter-spacing: 1px;
+          min-width: 28px;
+        }
+        .pain-text {
+          font-size: 1.1rem;
+          color: #dddddd;
+          font-weight: 500;
+          flex: 1;
+          word-break: keep-all;
+        }
+        .pain-check {
+          color: rgba(255,80,80,0.7);
+          font-size: 1.2rem;
+          font-weight: 700;
+        }
+        .pain-conclusion {
+          max-width: 700px;
+          margin: 72px auto 0;
+          text-align: center;
+        }
+        .pain-conclusion p {
+          font-size: clamp(1.3rem, 3vw, 1.8rem);
+          font-weight: 700;
+          line-height: 1.7;
+          color: #ffffff;
+          word-break: keep-all;
+        }
+        .pain-conclusion em {
+          font-style: normal;
+          color: #FF6B35;
         }
 
-        .solution-icon svg {
-          width: 28px;
-          height: 28px;
+        /* ══════════════════════════════
+           SECTION 3 — SOLUTION
+        ══════════════════════════════ */
+        .solution-section {
+          padding: 130px 0;
+          background: linear-gradient(180deg, #111 0%, #0d0d0d 100%);
+          position: relative;
+          overflow: hidden;
+          text-align: center;
+        }
+        .solution-glow {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 600px;
+          height: 600px;
+          background: radial-gradient(circle, rgba(255,107,53,0.12) 0%, transparent 65%);
+          pointer-events: none;
+        }
+        .solution-big-text {
+          font-size: clamp(2rem, 5.5vw, 4rem);
+          font-weight: 900;
+          line-height: 1.25;
+          margin-bottom: 36px;
+          color: #ffffff;
+          word-break: keep-all;
+          position: relative;
+        }
+        .solution-sub {
+          font-size: 1.1rem;
+          color: #aaa;
+          line-height: 2;
+          max-width: 680px;
+          margin: 0 auto 80px;
+          position: relative;
+        }
+        .solution-sub strong {
+          color: #FF6B35;
+        }
+        .funnel-flow {
+          display: flex;
+          align-items: flex-start;
+          justify-content: center;
+          gap: 0;
+          flex-wrap: wrap;
+          position: relative;
+        }
+        .funnel-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          position: relative;
+        }
+        .funnel-box {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 20px 28px;
+          border: 1px solid rgba(255,107,53,0.35);
+          border-radius: 16px;
+          background: rgba(255,107,53,0.06);
+          min-width: 130px;
+          transition: all 0.3s ease;
+        }
+        .funnel-box:hover {
+          border-color: #FF6B35;
+          background: rgba(255,107,53,0.12);
+          transform: translateY(-6px);
+          box-shadow: 0 12px 40px rgba(255,107,53,0.2);
+        }
+        .funnel-en {
+          font-family: 'Montserrat', sans-serif;
+          font-size: 0.72rem;
+          font-weight: 700;
+          color: #FF6B35;
+          letter-spacing: 2px;
+          margin-bottom: 6px;
+        }
+        .funnel-kr {
+          font-size: 1.2rem;
+          font-weight: 800;
           color: #ffffff;
         }
-
-        .solution-card h4 {
-          font-size: 1.25rem;
-          font-weight: 700;
-          margin-bottom: 12px;
-          color: #1a1a1a;
+        .funnel-desc {
+          font-size: 0.82rem;
+          color: #888;
+          margin-top: 12px;
+          max-width: 130px;
+          line-height: 1.5;
+          word-break: keep-all;
+        }
+        .funnel-arrow {
+          position: absolute;
+          right: -20px;
+          top: 28px;
+          font-size: 1.4rem;
+          color: #FF6B35;
+          z-index: 2;
         }
 
-        .solution-card p {
-          font-size: 0.95rem;
-          color: #666666;
-          line-height: 1.7;
-        }
-
-        /* 서비스 섹션 */
+        /* ══════════════════════════════
+           SECTION 4 — SERVICES
+        ══════════════════════════════ */
         .services-section {
-          background: #f8f9fc;
+          padding: 120px 0;
+          background: #111;
         }
-
         .services-grid {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: 32px;
+          gap: 24px;
         }
-
         .service-card {
-          background: #ffffff;
-          border: 1px solid #eaeaea;
+          background: rgba(255,255,255,0.03);
+          border: 1px solid rgba(255,255,255,0.07);
           border-radius: 24px;
-          padding: 48px;
-          text-decoration: none;
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-          display: block;
+          padding: 40px 36px;
           position: relative;
           overflow: hidden;
+          cursor: default;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        .service-card::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 4px;
-          background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
-          transform: scaleX(0);
-          transform-origin: left;
-          transition: transform 0.4s ease;
-        }
-
-        .service-card:hover::before {
-          transform: scaleX(1);
-        }
-
         .service-card:hover {
-          border-color: #6366f1;
-          box-shadow: 0 20px 50px rgba(99, 102, 241, 0.15);
+          background: rgba(255,107,53,0.06);
+          border-color: rgba(255,107,53,0.4);
+          transform: translateY(-8px);
+          box-shadow: 0 20px 60px rgba(255,107,53,0.15);
         }
-
-        .service-card .service-icon {
-          width: 72px;
-          height: 72px;
-          background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-          border-radius: 20px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 28px;
-          transition: all 0.4s ease;
+        .service-card:hover .sc-glow {
+          opacity: 1;
         }
-
-        .service-card:hover .service-icon {
-          transform: scale(1.05) rotate(-3deg);
+        .sc-glow {
+          position: absolute;
+          inset: 0;
+          border-radius: 24px;
+          background: radial-gradient(circle at 50% 0%, rgba(255,107,53,0.12) 0%, transparent 60%);
+          opacity: 0;
+          transition: opacity 0.4s ease;
+          pointer-events: none;
         }
-
-        .service-card .service-icon svg {
-          width: 36px;
-          height: 36px;
-          color: #ffffff;
-        }
-
-        .service-card h4 {
-          font-size: 1.5rem;
+        .sc-tag {
+          font-family: 'Montserrat', sans-serif;
+          font-size: 0.68rem;
           font-weight: 700;
+          letter-spacing: 2px;
+          color: #FF6B35;
           margin-bottom: 16px;
-          color: #1a1a1a;
         }
-
-        .service-card p {
-          font-size: 1rem;
-          color: #666666;
-          line-height: 1.7;
-          margin-bottom: 24px;
-        }
-
-        .service-link {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          font-size: 0.95rem;
-          color: #6366f1;
-          font-weight: 600;
-          transition: all 0.3s ease;
-        }
-
-        .service-link svg {
-          width: 18px;
-          height: 18px;
-          transition: transform 0.3s ease;
-        }
-
-        .service-card:hover .service-link svg {
-          transform: translateX(5px);
-        }
-
-        /* 업종별 전문성 섹션 */
-        .industry-section {
-          background: #ffffff;
-        }
-
-        .industry-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 24px;
-        }
-
-        .industry-card {
-          background: #f8f9fc;
-          border: 1px solid #eaeaea;
-          border-radius: 20px;
-          padding: 36px;
-          text-align: center;
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .industry-card:hover {
-          background: #ffffff;
-          border-color: #6366f1;
-          box-shadow: 0 20px 40px rgba(99, 102, 241, 0.1);
-        }
-
-        .industry-emoji {
-          font-size: 3rem;
+        .sc-icon {
+          font-size: 2.4rem;
           margin-bottom: 20px;
-          transition: transform 0.3s ease;
-        }
-
-        .industry-card:hover .industry-emoji {
-          transform: scale(1.2);
-        }
-
-        .industry-card h4 {
-          font-size: 1.15rem;
-          font-weight: 700;
-          margin-bottom: 12px;
-          color: #1a1a1a;
-        }
-
-        .industry-card p {
-          font-size: 0.9rem;
-          color: #666666;
-          line-height: 1.6;
-          margin-bottom: 16px;
-        }
-
-        .industry-result {
-          display: inline-block;
-          padding: 10px 20px;
-          background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
-          border-radius: 50px;
-          font-size: 0.9rem;
-          font-weight: 700;
-          color: #6366f1;
-        }
-
-        /* 성과 지표 섹션 */
-        .stats-section {
-          background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-          padding: 80px 0;
-        }
-
-        .stats-grid {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          gap: 80px;
-          flex-wrap: wrap;
-        }
-
-        .stat-item {
-          text-align: center;
-        }
-
-        .counter-value {
           display: block;
-          font-size: 4rem;
+        }
+        .sc-title {
+          font-size: 1.25rem;
           font-weight: 800;
           color: #ffffff;
-          margin-bottom: 8px;
+          margin-bottom: 14px;
+          line-height: 1.3;
         }
-
-        .stat-label {
-          font-size: 1rem;
-          color: rgba(255, 255, 255, 0.9);
-          font-weight: 500;
-        }
-
-        /* Why Us 섹션 */
-        .why-section {
-          background: #f8f9fc;
-        }
-
-        .why-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 24px;
-        }
-
-        .why-card {
-          background: #ffffff;
-          border: 1px solid #eaeaea;
-          border-radius: 20px;
-          padding: 40px;
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .why-card:hover {
-          border-color: #6366f1;
-          box-shadow: 0 20px 40px rgba(99, 102, 241, 0.1);
-        }
-
-        .why-number {
-          font-size: 2.5rem;
-          font-weight: 800;
-          background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-          -webkit-background-clip: text;
-          background-clip: text;
-          -webkit-text-fill-color: transparent;
-          margin-bottom: 16px;
-        }
-
-        .why-card h4 {
-          font-size: 1.25rem;
-          font-weight: 700;
-          margin-bottom: 12px;
-          color: #1a1a1a;
-        }
-
-        .why-card p {
+        .sc-desc {
           font-size: 0.95rem;
-          color: #666666;
+          color: #999;
           line-height: 1.7;
+          word-break: keep-all;
         }
 
-        /* CTA 섹션 */
-        .cta-section {
-          background: #ffffff;
+        /* ══════════════════════════════
+           SECTION 5 — PROCESS
+        ══════════════════════════════ */
+        .process-section {
           padding: 120px 0;
+          background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%);
+        }
+        .process-list {
+          max-width: 800px;
+          margin: 0 auto;
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+          position: relative;
+        }
+        .process-item {
+          display: flex;
+          gap: 40px;
+          align-items: flex-start;
+          padding: 32px 0;
+        }
+        .process-item.reverse {
+          flex-direction: row-reverse;
+          text-align: right;
+        }
+        .pi-number-wrap {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          min-width: 80px;
+        }
+        .pi-circle {
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          border: 2px solid #FF6B35;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(255,107,53,0.08);
+          flex-shrink: 0;
+        }
+        .pi-num {
+          font-family: 'Montserrat', sans-serif;
+          font-size: 0.68rem;
+          font-weight: 800;
+          color: #FF6B35;
+          text-align: center;
+          letter-spacing: 1px;
+          line-height: 1.4;
+        }
+        .pi-line {
+          width: 2px;
+          height: 56px;
+          background: linear-gradient(to bottom, #FF6B35, transparent);
+          margin-top: 8px;
+        }
+        .pi-content {
+          flex: 1;
+          padding-top: 16px;
+        }
+        .pi-title {
+          font-size: 1.3rem;
+          font-weight: 800;
+          color: #ffffff;
+          margin-bottom: 12px;
+        }
+        .pi-desc {
+          font-size: 0.97rem;
+          color: #999;
+          line-height: 1.8;
+          word-break: keep-all;
         }
 
-        .cta-content {
-          background: linear-gradient(135deg, #f8f9fc 0%, #ffffff 100%);
-          border: 1px solid #eaeaea;
-          border-radius: 32px;
-          padding: 80px 40px;
-          text-align: center;
-          position: relative;
+        /* ══════════════════════════════
+           SECTION 6 — INDUSTRIES
+        ══════════════════════════════ */
+        .industry-section {
+          padding: 120px 0;
+          background: #111;
           overflow: hidden;
         }
-
-        .cta-content::before {
+        .marquee-wrap {
+          overflow: hidden;
+          margin: 48px 0 56px;
+          position: relative;
+        }
+        .marquee-wrap::before,
+        .marquee-wrap::after {
           content: '';
           position: absolute;
           top: 0;
+          bottom: 0;
+          width: 80px;
+          z-index: 2;
+          pointer-events: none;
+        }
+        .marquee-wrap::before {
           left: 0;
+          background: linear-gradient(to right, #111, transparent);
+        }
+        .marquee-wrap::after {
           right: 0;
-          height: 4px;
-          background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
+          background: linear-gradient(to left, #111, transparent);
         }
-
-        .cta-title {
-          font-size: clamp(1.75rem, 4vw, 2.5rem);
-          font-weight: 800;
-          margin-bottom: 20px;
-          color: #1a1a1a;
-        }
-
-        .cta-desc {
-          font-size: 1.1rem;
-          color: #666666;
-          line-height: 1.8;
-          margin-bottom: 40px;
-        }
-
-        .cta-buttons {
+        .marquee-track {
           display: flex;
           gap: 16px;
-          justify-content: center;
-          flex-wrap: wrap;
-          margin-bottom: 24px;
+          white-space: nowrap;
+          animation: marquee 18s linear infinite;
+        }
+        .marquee-track:hover {
+          animation-play-state: paused;
+        }
+        .marquee-tag {
+          display: inline-block;
+          padding: 12px 24px;
+          border: 1px solid rgba(255,255,255,0.12);
+          border-radius: 50px;
+          font-size: 0.95rem;
+          font-weight: 600;
+          color: #ccc;
+          background: rgba(255,255,255,0.04);
+          transition: all 0.3s ease;
+          cursor: default;
+          white-space: nowrap;
+        }
+        .marquee-tag:hover {
+          border-color: #FF6B35;
+          color: #FF6B35;
+          background: rgba(255,107,53,0.08);
+        }
+        .industry-conclusion {
+          text-align: center;
+          font-size: clamp(1rem, 2.2vw, 1.2rem);
+          color: #aaa;
+          line-height: 2;
+          word-break: keep-all;
+        }
+        .industry-conclusion strong {
+          color: #FF6B35;
+          font-weight: 800;
         }
 
-        .cta-button {
-          display: inline-block;
-          padding: 18px 44px;
-          border-radius: 50px;
-          font-size: 1.05rem;
-          font-weight: 600;
-          text-decoration: none;
+        /* ══════════════════════════════
+           SECTION 7 — RESULTS
+        ══════════════════════════════ */
+        .results-section {
+          padding: 120px 0;
+          background: linear-gradient(135deg, #0f0a05 0%, #1a0f06 50%, #0a0a0a 100%);
+          position: relative;
+          overflow: hidden;
+        }
+        .results-bg-glow {
+          position: absolute;
+          top: -20%;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 800px;
+          height: 800px;
+          background: radial-gradient(circle, rgba(255,107,53,0.1) 0%, transparent 60%);
+          pointer-events: none;
+        }
+        .stats-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 24px;
+          margin-bottom: 80px;
+          position: relative;
+        }
+        .stat-card {
+          text-align: center;
+          padding: 40px 24px;
+          background: rgba(255,255,255,0.04);
+          border: 1px solid rgba(255,107,53,0.2);
+          border-radius: 20px;
           transition: all 0.3s ease;
         }
-
-        .cta-button.primary {
-          background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-          color: #ffffff;
-          box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+        .stat-card:hover {
+          border-color: #FF6B35;
+          background: rgba(255,107,53,0.07);
+          transform: translateY(-6px);
+          box-shadow: 0 16px 50px rgba(255,107,53,0.2);
+        }
+        .stat-number {
+          margin-bottom: 12px;
+        }
+        .stat-count {
+          font-family: 'Montserrat', sans-serif;
+          font-size: clamp(2.5rem, 4vw, 3.5rem);
+          font-weight: 900;
+          background: linear-gradient(135deg, #FF6B35, #FF8C42);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          display: inline-block;
+        }
+        .stat-label {
+          font-size: 0.92rem;
+          color: #aaa;
+          line-height: 1.5;
+          word-break: keep-all;
         }
 
-        .cta-button.primary:hover {
-          transform: translateY(-3px) scale(1.02);
-          box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+        /* Testimonials */
+        .testimonials-wrap {
+          position: relative;
         }
-
-        .cta-button.secondary {
-          background: #ffffff;
-          color: #6366f1;
-          border: 2px solid #6366f1;
+        .testi-swiper {
+          padding-bottom: 48px !important;
         }
-
-        .cta-button.secondary:hover {
-          background: #6366f1;
-          color: #ffffff;
-          transform: translateY(-3px);
+        .testi-card {
+          background: rgba(255,255,255,0.04);
+          border: 1px solid rgba(255,255,255,0.08);
+          border-radius: 20px;
+          padding: 32px;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+          transition: border-color 0.3s ease;
         }
-
-        .cta-note {
+        .testi-card:hover {
+          border-color: rgba(255,107,53,0.3);
+        }
+        .testi-stars {
+          color: #FF8C42;
+          font-size: 1rem;
+          letter-spacing: 2px;
+        }
+        .testi-text {
+          font-size: 0.97rem;
+          color: #ccc;
+          line-height: 1.8;
+          flex: 1;
+          word-break: keep-all;
+        }
+        .testi-author {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        .testi-avatar {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #FF6B35, #FF8C42);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1rem;
+          font-weight: 800;
+          color: #fff;
+          flex-shrink: 0;
+        }
+        .testi-author strong {
+          display: block;
           font-size: 0.9rem;
-          color: #999999;
+          color: #fff;
+          font-weight: 700;
+        }
+        .testi-author span {
+          font-size: 0.8rem;
+          color: #666;
+        }
+        .testi-note {
+          text-align: center;
+          font-size: 0.8rem;
+          color: #555;
+          margin-top: 8px;
         }
 
-        /* hover-lift 효과 */
-        .hover-lift {
-          transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        /* ══════════════════════════════
+           SECTION 8 — COMPARISON
+        ══════════════════════════════ */
+        .compare-section {
+          padding: 120px 0;
+          background: #0a0a0a;
+        }
+        .compare-table {
+          max-width: 900px;
+          margin: 56px auto 0;
+        }
+        .compare-header {
+          display: grid;
+          grid-template-columns: 1fr 20px 1fr;
+          gap: 0;
+          margin-bottom: 8px;
+        }
+        .compare-col {
+          text-align: center;
+          font-family: 'Montserrat', sans-serif;
+          font-size: 0.8rem;
+          font-weight: 800;
+          letter-spacing: 3px;
+          padding: 16px;
+          border-radius: 12px 12px 0 0;
+        }
+        .compare-col.bad {
+          background: rgba(255,255,255,0.04);
+          color: #777;
+        }
+        .compare-col.good {
+          background: rgba(255,107,53,0.1);
+          color: #FF6B35;
+        }
+        .compare-divider {
+          background: transparent;
+        }
+        .compare-row {
+          display: grid;
+          grid-template-columns: 1fr 20px 1fr;
+          gap: 0;
+          border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .compare-cell {
+          padding: 20px 24px;
+          font-size: 0.97rem;
+          line-height: 1.5;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          word-break: keep-all;
+        }
+        .bad-cell {
+          background: rgba(255,255,255,0.02);
+          color: #777;
+          border-right: none;
+        }
+        .good-cell {
+          background: rgba(255,107,53,0.04);
+          color: #e0e0e0;
+          font-weight: 600;
+        }
+        .compare-row:last-child .bad-cell {
+          border-radius: 0 0 0 12px;
+        }
+        .compare-row:last-child .good-cell {
+          border-radius: 0 0 12px 0;
+        }
+        .bad-icon {
+          color: rgba(255,80,80,0.7);
+          font-size: 1rem;
+          flex-shrink: 0;
+        }
+        .good-icon {
+          color: #00C9A7;
+          font-size: 1rem;
+          flex-shrink: 0;
+        }
+        .compare-mid-dot {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: transparent;
+          position: relative;
+        }
+        .compare-mid-dot::before {
+          content: '';
+          width: 1px;
+          height: 100%;
+          background: rgba(255,255,255,0.08);
+          position: absolute;
+          left: 50%;
         }
 
-        /* 반응형 */
+        /* ══════════════════════════════
+           SECTION 9 — CTA BANNER
+        ══════════════════════════════ */
+        .cta-banner-section {
+          padding: 120px 0;
+          position: relative;
+          overflow: hidden;
+          text-align: center;
+        }
+        .cta-banner-bg {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #e05520 100%);
+        }
+        .cta-banner-inner {
+          position: relative;
+          z-index: 2;
+        }
+        .cta-banner-title {
+          font-size: clamp(1.8rem, 4.5vw, 3rem);
+          font-weight: 900;
+          color: #ffffff;
+          line-height: 1.3;
+          margin-bottom: 24px;
+          word-break: keep-all;
+          text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+        }
+        .cta-banner-sub {
+          font-size: 1.1rem;
+          color: rgba(255,255,255,0.88);
+          line-height: 1.8;
+          margin-bottom: 48px;
+          word-break: keep-all;
+        }
+        .cta-banner-btn {
+          display: inline-block;
+          background: #ffffff;
+          color: #FF6B35;
+          border: none;
+          padding: 20px 52px;
+          border-radius: 50px;
+          font-size: 1.1rem;
+          font-weight: 800;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+          font-family: inherit;
+          animation: glow-pulse 2.5s ease-in-out infinite;
+        }
+        .cta-banner-btn:hover {
+          transform: translateY(-4px) scale(1.04);
+          box-shadow: 0 16px 50px rgba(0,0,0,0.3);
+        }
+
+        /* ══════════════════════════════
+           SECTION 10 — CONTACT
+        ══════════════════════════════ */
+        .contact-section {
+          padding: 120px 0;
+          background: #0a0a0a;
+        }
+        .contact-form {
+          max-width: 680px;
+          margin: 0 auto;
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+        .form-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
+        }
+        .form-group {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .form-group label {
+          font-size: 0.88rem;
+          font-weight: 600;
+          color: #aaa;
+          letter-spacing: 0.5px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 12px;
+          padding: 14px 18px;
+          color: #ffffff;
+          font-size: 0.97rem;
+          font-family: inherit;
+          outline: none;
+          transition: border-color 0.3s ease, box-shadow 0.3s ease;
+          resize: vertical;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+          border-color: #FF6B35;
+          box-shadow: 0 0 0 3px rgba(255,107,53,0.15);
+        }
+        .form-group select option {
+          background: #1a1a1a;
+          color: #ffffff;
+        }
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+          color: rgba(255,255,255,0.3);
+        }
+        .form-agree {
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+        }
+        .form-agree input[type="checkbox"] {
+          width: 18px;
+          height: 18px;
+          flex-shrink: 0;
+          margin-top: 2px;
+          accent-color: #FF6B35;
+          cursor: pointer;
+        }
+        .form-agree label {
+          font-size: 0.88rem;
+          color: #777;
+          line-height: 1.6;
+          cursor: pointer;
+        }
+        .form-submit-btn {
+          background: linear-gradient(135deg, #FF6B35, #FF8C42);
+          color: #ffffff;
+          border: none;
+          padding: 18px;
+          border-radius: 12px;
+          font-size: 1.05rem;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          font-family: inherit;
+          box-shadow: 0 6px 30px rgba(255,107,53,0.35);
+        }
+        .form-submit-btn:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 12px 40px rgba(255,107,53,0.5);
+        }
+        .form-success {
+          max-width: 480px;
+          margin: 0 auto;
+          text-align: center;
+          padding: 80px 40px;
+          background: rgba(0,201,167,0.06);
+          border: 1px solid rgba(0,201,167,0.3);
+          border-radius: 24px;
+        }
+        .success-icon {
+          font-size: 3rem;
+          color: #00C9A7;
+          margin-bottom: 24px;
+          display: block;
+        }
+        .form-success h3 {
+          font-size: 1.5rem;
+          font-weight: 800;
+          color: #ffffff;
+          margin-bottom: 12px;
+        }
+        .form-success p {
+          font-size: 1rem;
+          color: #aaa;
+        }
+
+        /* ══════════════════════════════
+           FOOTER
+        ══════════════════════════════ */
+        .footer {
+          background: #0a0a0a;
+          border-top: 1px solid rgba(255,255,255,0.07);
+          padding: 60px 0 0;
+        }
+        .footer-inner {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 40px;
+          padding-bottom: 48px;
+        }
+        .footer-logo {
+          font-family: 'Montserrat', 'Pretendard', sans-serif;
+          font-size: 1.4rem;
+          font-weight: 800;
+          color: #ffffff;
+          margin-bottom: 12px;
+        }
+        .footer-logo .logo-grow {
+          color: #FF6B35;
+        }
+        .footer-tagline {
+          font-size: 0.95rem;
+          color: #666;
+          margin-bottom: 16px;
+        }
+        .footer-biz {
+          font-size: 0.82rem;
+          color: #555;
+          line-height: 1.8;
+        }
+        .footer-right {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          align-items: flex-end;
+        }
+        .footer-contact-item {
+          font-size: 0.9rem;
+          color: #666;
+        }
+        .footer-sns {
+          display: flex;
+          gap: 12px;
+          margin-top: 12px;
+        }
+        .sns-icon {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          border: 1px solid rgba(255,255,255,0.12);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #666;
+          transition: all 0.3s ease;
+        }
+        .sns-icon:hover {
+          border-color: #FF6B35;
+          color: #FF6B35;
+          background: rgba(255,107,53,0.08);
+        }
+        .sns-icon svg {
+          width: 18px;
+          height: 18px;
+        }
+        .footer-bottom {
+          border-top: 1px solid rgba(255,255,255,0.05);
+          padding: 20px 32px;
+          text-align: center;
+        }
+        .footer-bottom p {
+          font-size: 0.82rem;
+          color: #444;
+        }
+
+        /* ══════════════════════════════
+           FLOATING UI
+        ══════════════════════════════ */
+        .back-to-top {
+          position: fixed;
+          bottom: 88px;
+          right: 28px;
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #FF6B35, #FF8C42);
+          color: #fff;
+          border: none;
+          font-size: 1.2rem;
+          font-weight: 700;
+          cursor: pointer;
+          z-index: 8000;
+          box-shadow: 0 6px 24px rgba(255,107,53,0.4);
+          transition: all 0.3s ease;
+        }
+        .back-to-top:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 36px rgba(255,107,53,0.55);
+        }
+        .mobile-sticky-cta {
+          display: none;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          z-index: 8500;
+          padding: 12px 20px;
+          background: rgba(10,10,10,0.95);
+          backdrop-filter: blur(16px);
+          border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .mobile-sticky-cta button {
+          width: 100%;
+          padding: 16px;
+          background: linear-gradient(135deg, #FF6B35, #FF8C42);
+          color: #ffffff;
+          border: none;
+          border-radius: 12px;
+          font-size: 1rem;
+          font-weight: 700;
+          cursor: pointer;
+          font-family: inherit;
+        }
+
+        /* ══════════════════════════════
+           RESPONSIVE
+        ══════════════════════════════ */
         @media (max-width: 1024px) {
-          .industry-grid {
+          .stats-grid {
             grid-template-columns: repeat(2, 1fr);
           }
         }
 
         @media (max-width: 768px) {
-          section {
+          .container { padding: 0 20px; }
+
+          /* Hero */
+          .hero-btns { flex-direction: column; align-items: center; }
+          .btn-primary, .btn-outline { width: 100%; max-width: 300px; }
+
+          /* Pain */
+          .pain-section { padding: 80px 0; }
+          .pain-item { padding: 20px 16px; gap: 14px; }
+          .pain-text { font-size: 1rem; }
+
+          /* Solution */
+          .solution-section { padding: 90px 0; }
+          .funnel-flow { flex-direction: column; align-items: center; gap: 16px; }
+          .funnel-arrow { display: none; }
+          .funnel-item { width: 100%; max-width: 280px; }
+          .funnel-box { width: 100%; }
+
+          /* Services */
+          .services-grid { grid-template-columns: 1fr; }
+          .services-section { padding: 80px 0; }
+
+          /* Process */
+          .process-item, .process-item.reverse { flex-direction: column; align-items: flex-start; }
+          .pi-number-wrap { flex-direction: row; align-items: center; gap: 16px; min-width: auto; }
+          .pi-line { width: 40px; height: 2px; margin: 0; }
+
+          /* Industry */
+          .industry-section { padding: 80px 0; }
+
+          /* Results */
+          .results-section { padding: 80px 0; }
+          .stats-grid { grid-template-columns: repeat(2, 1fr); }
+
+          /* Comparison */
+          .compare-section { padding: 80px 0; }
+          .compare-table { overflow-x: auto; }
+          .compare-header, .compare-row { grid-template-columns: 1fr 12px 1fr; }
+          .compare-cell { padding: 14px 12px; font-size: 0.88rem; }
+
+          /* Form */
+          .form-row { grid-template-columns: 1fr; }
+
+          /* Footer */
+          .footer-inner { grid-template-columns: 1fr; }
+          .footer-right { align-items: flex-start; }
+
+          /* Sticky CTA */
+          .mobile-sticky-cta { display: block; }
+          .back-to-top { bottom: 78px; }
+
+          /* Sections */
+          .pain-section,
+          .solution-section,
+          .services-section,
+          .process-section,
+          .industry-section,
+          .results-section,
+          .compare-section,
+          .cta-banner-section,
+          .contact-section {
             padding: 80px 0;
-          }
-
-          .hero-section {
-            background-size: cover !important;
-          }
-
-          .hero-cta {
-            flex-direction: column;
-            align-items: center;
-          }
-
-          .hero-button {
-            width: 100%;
-            max-width: 280px;
-            text-align: center;
-          }
-
-          .problem-grid,
-          .solution-grid,
-          .why-grid,
-          .services-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .industry-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .stats-grid {
-            flex-direction: column;
-            gap: 40px;
-          }
-
-          .counter-value {
-            font-size: 3rem;
-          }
-
-          .cta-content {
-            padding: 60px 24px;
-          }
-
-          .cta-buttons {
-            flex-direction: column;
-            align-items: center;
-          }
-
-          .cta-button {
-            width: 100%;
-            max-width: 280px;
-            text-align: center;
           }
         }
 
-        @media (min-width: 769px) {
-          .hero-section {
-            background-size: 150% auto;
-          }
+        @media (max-width: 480px) {
+          .hero-h1 { font-size: clamp(2rem, 8vw, 2.8rem); }
+          .stats-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+          .stat-card { padding: 28px 16px; }
+          .compare-cell { font-size: 0.82rem; padding: 12px 8px; }
         }
       `}</style>
     </div>

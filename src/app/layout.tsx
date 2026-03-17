@@ -1,50 +1,56 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Header from "./components/Header";
 import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://growmarketing.co.kr"),
-  title: {
-    default: "그로우 마케팅 | 성과 중심 종합 마케팅 대행사",
-    template: "%s | 그로우 마케팅",
-  },
+  title: "그로우마케팅 | 광고부터 CRM까지, 매출 구조를 설계합니다",
   description:
-    "그로우 마케팅은 SNS광고, 홈페이지 제작까지 한 번에 설계·실행하는 성과 중심 종합 마케팅 대행사입니다.",
+    "광고 집행, 소재 제작, 랜딩페이지, 홈페이지 구축, CRM 자동화까지. 노출-유입-전환-재구매 풀퍼널 마케팅.",
+  keywords: ["마케팅 대행사", "메타광고", "구글광고", "랜딩페이지", "CRM", "홈페이지 제작", "그로우마케팅"],
   alternates: {
     canonical: "https://growmarketing.co.kr",
   },
   openGraph: {
     type: "website",
     url: "https://growmarketing.co.kr",
-    siteName: "그로우 마케팅",
+    siteName: "그로우마케팅",
     locale: "ko_KR",
-    title: "그로우 마케팅",
+    title: "그로우마케팅 | 광고부터 CRM까지, 매출 구조를 설계합니다",
     description:
-      "SNS광고, 홈페이지 제작까지 올인원으로 성과를 만드는 종합 마케팅 대행사",
+      "광고 집행, 소재 제작, 랜딩페이지, 홈페이지 구축, CRM 자동화까지. 노출-유입-전환-재구매 풀퍼널 마케팅.",
     images: [
       {
         url: "https://cdn.imweb.me/thumbnail/20251217/836b4ef0e58ac.png",
-        width: 800,
-        height: 800,
-        alt: "그로우 마케팅 로고",
+        width: 1200,
+        height: 630,
+        alt: "그로우마케팅 — 매출 구조를 설계합니다",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "그로우 마케팅",
-    description: "SNS광고·홈페이지 제작 올인원 마케팅",
+    title: "그로우마케팅 | 광고부터 CRM까지, 매출 구조를 설계합니다",
+    description: "노출-유입-전환-재구매 풀퍼널 마케팅 대행사",
     images: ["https://cdn.imweb.me/thumbnail/20251217/836b4ef0e58ac.png"],
   },
 };
 
 const orgJsonLd = {
   "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "그로우 마케팅",
+  "@type": "LocalBusiness",
+  name: "그로우마케팅",
   url: "https://growmarketing.co.kr",
+  description: "광고 집행, 소재 제작, 랜딩페이지, 홈페이지 구축, CRM 자동화까지 풀퍼널 마케팅 대행사",
   logo: "https://cdn.imweb.me/thumbnail/20251217/836b4ef0e58ac.png",
-  sameAs: [],
+  address: {
+    "@type": "PostalAddress",
+    addressCountry: "KR",
+  },
+  founder: {
+    "@type": "Person",
+    name: "허준영",
+  },
 };
 
 export default function RootLayout({
@@ -54,28 +60,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap"
+          rel="stylesheet"
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
         />
-        {/* ============================== */}
-        {/* 상단 헤더 영역 */}
-        {/* ============================== */}
-        <header className="main-header">
-          <nav className="nav">
-            <Link href="/" className="nav-logo">그로우마케팅</Link>
-            <div className="nav-links">
-              <Link href="/">홈</Link>
-              <Link href="/portfolio">성공사례</Link>
-              <Link href="/contact">문의하기</Link>
-            </div>
-          </nav>
-        </header>
-
-        {/* ============================== */}
-        {/* 본문 콘텐츠 영역 */}
-        {/* ============================== */}
+      </head>
+      <body>
+        <Header />
         <main>{children}</main>
       </body>
     </html>
