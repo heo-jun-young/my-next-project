@@ -21,7 +21,7 @@ const PAIN_POINTS = [
 const SERVICES = [
   {
     icon: "📊",
-    title: "Meta · Google 광고 집행",
+    title: "Meta(인스타) · 네이버 광고 집행",
     desc: "타겟 설정부터 소재 테스트, 예산 최적화까지. 광고비 대비 최대 전환을 만듭니다.",
     tag: "AD OPERATION",
   },
@@ -128,7 +128,7 @@ export default function Home() {
   const [showTop, setShowTop] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [form, setForm] = useState({
-    name: "", phone: "", industry: "", services: [] as string[], message: "", agree: false,
+    name: "", phone: "", industry: "", bizUrl: "", services: [] as string[], message: "", agree: false,
   });
 
   const toggleService = (svc: string) => {
@@ -648,12 +648,22 @@ export default function Home() {
                   <option>기타</option>
                 </select>
               </div>
+              <div className="form-group">
+                <label>홈페이지 주소 또는 네이버지도 업체명</label>
+                <input
+                  type="text"
+                  placeholder="예) https://example.com  또는  홍길동 필라테스 강남점"
+                  value={form.bizUrl}
+                  onChange={(e) => setForm({ ...form, bizUrl: e.target.value })}
+                />
+              </div>
+
               {/* ── 원하는 서비스 체크박스 ── */}
               <div className="form-group">
                 <label>원하는 서비스 <span className="label-sub">(복수 선택 가능)</span></label>
                 <div className="service-checks">
                   {[
-                    { id: "svc1", icon: "📊", label: "Meta · Google 광고 집행" },
+                    { id: "svc1", icon: "📊", label: "Meta(인스타) · 네이버 광고 집행" },
                     { id: "svc2", icon: "🎨", label: "광고 소재 기획·제작" },
                     { id: "svc3", icon: "🖥️", label: "전환 중심 랜딩페이지" },
                     { id: "svc4", icon: "🌐", label: "홈페이지·웹사이트 구축" },
