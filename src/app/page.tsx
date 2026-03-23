@@ -148,7 +148,7 @@ export default function Home() {
   const [showTop, setShowTop] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [form, setForm] = useState({
-    name: "", phone: "", phone2: "", industry: "", bizUrl: "", services: [] as string[], message: "", agree: false,
+    name: "", phone: "", phone2: "", industry: "", industryOther: "", bizUrl: "", services: [] as string[], message: "", agree: false,
   });
 
   const toggleService = (svc: string) => {
@@ -706,6 +706,18 @@ export default function Home() {
                   <option>기타</option>
                 </select>
               </div>
+              {form.industry === "기타" && (
+                <div className="form-group" data-aos="fade-down">
+                  <label>업종 직접 입력 *</label>
+                  <input
+                    type="text"
+                    placeholder="업종을 직접 입력해 주세요"
+                    required
+                    value={form.industryOther}
+                    onChange={(e) => setForm({ ...form, industryOther: e.target.value })}
+                  />
+                </div>
+              )}
               <div className="form-group">
                 <label>홈페이지 주소 또는 네이버지도 업체명</label>
                 <input
