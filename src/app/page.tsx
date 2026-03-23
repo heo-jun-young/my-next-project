@@ -104,19 +104,39 @@ const COMPARISON = [
 
 const TESTIMONIALS = [
   {
-    name: "피트니스 센터 원장",
-    industry: "피트니스",
-    text: "3개월 만에 신규 회원이 2배 이상 늘었습니다. 광고만 돌리는 게 아니라 전체 구조를 잡아준다는 게 무슨 의미인지 직접 체감했어요.",
+    name: "김O원 원장",
+    industry: "피트니스 센터",
+    text: "인스타 광고 소재부터 랜딩페이지까지 한 팀에서 다 해주니까 방향성이 흔들리질 않더라고요. 3개월 지나니까 신규 등록이 눈에 띄게 늘었어요. 예전엔 광고비만 나가고 효과가 없다고 느꼈는데, 구조 자체가 바뀌니까 다르더라고요.",
   },
   {
-    name: "뷰티샵 대표",
-    industry: "뷰티",
-    text: "이전 대행사는 리포트만 보내줬는데 그로우는 매주 미팅해서 뭘 어떻게 개선할지 같이 고민해줬어요. 예약률이 확실히 달라졌습니다.",
+    name: "박O진 원장",
+    industry: "학원",
+    text: "상담 문의가 진짜 들어오긴 하는 건지 의심했었는데 DB 자동화 세팅하고 나서 실시간으로 문자 알림이 오더라고요. 놓치는 게 확실히 줄었고, 원장 입장에서는 수업에 집중할 수 있어서 좋았습니다.",
   },
   {
-    name: "학원 원장",
-    industry: "교육",
-    text: "홈페이지도 만들고 광고도 돌리고 블로그도 관리해주는데 한 팀에서 다 된다는 게 너무 편합니다. 소통도 훨씬 빠르고요.",
+    name: "이O준 대표",
+    industry: "창업컨설팅",
+    text: "솔직히 처음엔 반신반의했어요. 광고부터 홈페이지, CRM까지 한 곳에서 다 된다는 말이 그냥 영업 멘트처럼 들렸거든요. 근데 실제로 해보니 각 담당자한테 따로 연락 안 해도 되니까 소통 스트레스가 없었어요. 상담 인입도 이전보다 확실히 늘었고요.",
+  },
+  {
+    name: "정O훈 대표",
+    industry: "인테리어 시공",
+    text: "광고 소재 기획부터 랜딩페이지 제작까지 다 맡겼는데 처음 미팅에서 저희 업종 특성을 꽤 잘 파악하더라고요. 블로그나 플레이스는 굳이 안 해도 된다고 직접 말해줬는데, 그게 오히려 신뢰가 생겼어요. 문의 퀄리티도 좋아졌습니다.",
+  },
+  {
+    name: "최O아 대표",
+    industry: "인테리어 디자인",
+    text: "포트폴리오 위주라서 홈페이지가 중요했는데 전환까지 고려한 구조로 만들어줬어요. 예쁜 게 전부가 아니라는 걸 직접 설명해주더라고요. 홈페이지 오픈 후 한 달 만에 상담 문의 몇 건 들어왔고, 지금도 꾸준히 오고 있습니다.",
+  },
+  {
+    name: "한O석 원장",
+    industry: "의원",
+    text: "의료 광고 규제 때문에 조심스러웠는데 처음부터 그 부분을 인지하고 접근해줘서 안심했어요. 네이버 플레이스 관리랑 인스타 광고 병행했는데 신환 수가 체감상 늘었습니다. 뭔가를 직접 챙기지 않아도 알아서 보고해주는 게 편했어요.",
+  },
+  {
+    name: "윤O철 대표",
+    industry: "가구 제작",
+    text: "제작 가구 특성상 문의 하나하나가 다 중요한데 이전엔 홈페이지 들어와도 그냥 나가는 사람이 많았어요. 랜딩페이지 구조 바꾸고 나서 체류 시간도 늘고 문의 전환이 확실히 달라졌습니다. 광고비 대비 효율이 이전이랑 완전히 다른 수준이에요.",
   },
 ];
 
@@ -128,7 +148,7 @@ export default function Home() {
   const [showTop, setShowTop] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [form, setForm] = useState({
-    name: "", phone: "", industry: "", bizUrl: "", services: [] as string[], message: "", agree: false,
+    name: "", phone: "", phone2: "", industry: "", bizUrl: "", services: [] as string[], message: "", agree: false,
   });
 
   const toggleService = (svc: string) => {
@@ -376,7 +396,7 @@ export default function Home() {
           </div>
 
           {/* 실제 전환 결과 포트폴리오 */}
-          <div className="funnel-proof" data-aos="fade-up" data-aos-delay="200">
+          <div id="results" className="funnel-proof" data-aos="fade-up" data-aos-delay="200">
             <p className="funnel-proof-label">REAL RESULTS</p>
             <p className="funnel-proof-title">
               실제로 이런 문의가 들어옵니다
@@ -558,7 +578,6 @@ export default function Home() {
                 </SwiperSlide>
               ))}
             </Swiper>
-            <p className="testi-note">* 향후 실제 고객 후기로 업데이트 예정</p>
           </div>
         </div>
       </section>
@@ -656,6 +675,16 @@ export default function Home() {
                     required
                     value={form.phone}
                     onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>연락처 확인 *</label>
+                  <input
+                    type="tel"
+                    placeholder="010-0000-0000 (한 번 더 입력)"
+                    required
+                    value={form.phone2}
+                    onChange={(e) => setForm({ ...form, phone2: e.target.value })}
                   />
                 </div>
               </div>
@@ -1787,7 +1816,7 @@ export default function Home() {
         }
         .form-row {
           display: grid;
-          grid-template-columns: 1fr 1fr;
+          grid-template-columns: 1fr 1fr 1fr;
           gap: 20px;
         }
         .form-group {
