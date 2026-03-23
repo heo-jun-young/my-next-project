@@ -374,6 +374,35 @@ export default function Home() {
               </div>
             ))}
           </div>
+
+          {/* 실제 전환 결과 포트폴리오 */}
+          <div className="funnel-proof" data-aos="fade-up" data-aos-delay="200">
+            <p className="funnel-proof-label">REAL RESULTS</p>
+            <p className="funnel-proof-title">
+              실제로 이런 문의가 들어옵니다
+            </p>
+            <p className="funnel-proof-sub">
+              광고 → 랜딩페이지 → 문의 전환, 실제 클라이언트 결과물입니다.
+            </p>
+            <div className="funnel-proof-grid">
+              {[
+                { src: "https://cdn.imweb.me/thumbnail/20260323/8eefc3b344d8f.png", label: "가구 제작업체 문의" },
+                { src: "https://cdn.imweb.me/thumbnail/20260323/fac2fe615a083.png", label: "가맹창업 문의" },
+                { src: "https://cdn.imweb.me/thumbnail/20260323/4d9d72604b613.png", label: "인테리어 시공 문의" },
+                { src: "https://cdn.imweb.me/thumbnail/20260323/830d9f2ef949f.png", label: "인테리어 상담 문의" },
+              ].map((item, i) => (
+                <div key={i} className="proof-card" data-aos="zoom-in" data-aos-delay={i * 80}>
+                  <div className="proof-img-wrap">
+                    <img src={item.src} alt={item.label} className="proof-img" />
+                    <div className="proof-overlay">
+                      <span className="proof-check">✓ 전환 완료</span>
+                    </div>
+                  </div>
+                  <p className="proof-label">{item.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1169,6 +1198,90 @@ export default function Home() {
           font-size: 1.4rem;
           color: #FF6B35;
           z-index: 2;
+        }
+
+        /* 전환 결과 포트폴리오 */
+        .funnel-proof {
+          margin-top: 80px;
+          text-align: center;
+        }
+        .funnel-proof-label {
+          font-family: 'Montserrat', sans-serif;
+          font-size: 0.72rem;
+          font-weight: 700;
+          letter-spacing: 4px;
+          color: #00C9A7;
+          margin-bottom: 14px;
+        }
+        .funnel-proof-title {
+          font-size: 1.7rem;
+          font-weight: 800;
+          color: #fff;
+          margin-bottom: 10px;
+          word-break: keep-all;
+        }
+        .funnel-proof-sub {
+          font-size: 0.9rem;
+          color: #888;
+          margin-bottom: 40px;
+        }
+        .funnel-proof-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 18px;
+        }
+        .proof-card {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+        .proof-img-wrap {
+          position: relative;
+          border-radius: 14px;
+          overflow: hidden;
+          border: 1px solid rgba(255,255,255,0.08);
+          aspect-ratio: 9/16;
+          background: #1a1a1a;
+        }
+        .proof-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: top;
+          display: block;
+          transition: transform 0.5s ease;
+        }
+        .proof-card:hover .proof-img {
+          transform: scale(1.04);
+        }
+        .proof-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
+          display: flex;
+          align-items: flex-end;
+          justify-content: center;
+          padding-bottom: 16px;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        }
+        .proof-card:hover .proof-overlay {
+          opacity: 1;
+        }
+        .proof-check {
+          background: #00C9A7;
+          color: #000;
+          font-size: 0.75rem;
+          font-weight: 800;
+          padding: 5px 14px;
+          border-radius: 20px;
+          letter-spacing: 0.5px;
+        }
+        .proof-label {
+          font-size: 0.82rem;
+          color: #aaa;
+          text-align: center;
+          font-weight: 500;
         }
 
         /* ══════════════════════════════
@@ -1988,6 +2101,8 @@ export default function Home() {
           .funnel-flow { flex-direction: column; align-items: center; gap: 16px; }
           .funnel-arrow { display: none; }
           .funnel-item { width: 100%; max-width: 280px; }
+          .funnel-proof-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+          .funnel-proof-title { font-size: 1.3rem; }
           .funnel-box { width: 100%; }
 
           /* Services */
