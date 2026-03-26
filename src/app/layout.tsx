@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import Header from "./components/Header";
 import "./globals.css";
 
@@ -82,9 +81,36 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
         />
+        <script dangerouslySetInnerHTML={{ __html: `
+          document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+              var el = document.getElementById('loading-screen');
+              if (el) {
+                el.style.opacity = '0';
+                setTimeout(function() { el.remove(); }, 400);
+              }
+            }, 300);
+          });
+        `}} />
       </head>
       <body>
-<Header />
+        <div id="loading-screen" style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: '#0a0a0a',
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'opacity 0.4s ease',
+          opacity: 1
+        }}>
+          <span style={{ color: '#FF6B35', fontSize: '20px', fontWeight: 'bold' }}>Grow마케팅</span>
+        </div>
+        <Header />
         <main>{children}</main>
       </body>
     </html>
