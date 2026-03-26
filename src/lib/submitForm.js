@@ -1,5 +1,3 @@
-const GOOGLE_SHEET_URL = process.env.NEXT_PUBLIC_GOOGLE_SHEET_URL;
-
 export function validatePhone(phone, phoneConfirm) {
   if (!phone) return { valid: false, message: "연락처를 입력해주세요." };
   if (!phoneConfirm) return { valid: false, message: "연락처 확인을 입력해주세요." };
@@ -14,13 +12,13 @@ export async function submitToGoogleSheet(formData) {
   const { phoneConfirm, ...submitData } = formData;
 
   try {
-    await fetch(GOOGLE_SHEET_URL, {
+    const response = await fetch("/api/contact", {
       method: "POST",
-      mode: "no-cors",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(submitData),
     });
-    return { success: true };
+    const result = await response.json();
+    return { success: result.result === "success" };
   } catch (error) {
     return { success: false, error: error.message };
   }

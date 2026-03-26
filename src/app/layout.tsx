@@ -8,6 +8,16 @@ export const metadata: Metadata = {
   description:
     "광고 집행, 소재 제작, 랜딩페이지, 홈페이지 구축, CRM 자동화까지. 노출-유입-전환-재구매 풀퍼널 마케팅.",
   keywords: ["마케팅 대행사", "메타광고", "구글광고", "랜딩페이지", "CRM", "홈페이지 제작", "그로우마케팅"],
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180" },
+    ],
+  },
   alternates: {
     canonical: "https://growmarketing.co.kr",
   },
