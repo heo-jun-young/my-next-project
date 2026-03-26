@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { submitToGoogleSheet } from "@/lib/submitForm";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -147,6 +148,8 @@ export default function Home() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showTop, setShowTop] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [formError, setFormError] = useState("");
+  const [formLoading, setFormLoading] = useState(false);
   const [form, setForm] = useState({
     name: "", phone: "", phone2: "", industry: "", industryOther: "", bizUrl: "", services: [] as string[], message: "", agree: false,
   });
@@ -274,10 +277,31 @@ export default function Home() {
   const scrollTo = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.agree) { alert("개인정보 수집·이용에 동의해 주세요."); return; }
-    setFormSubmitted(true);
+    setFormError("");
+    if (!form.agree) { setFormError("개인정보 수집·이용에 동의해 주세요."); return; }
+
+    setFormLoading(true);
+    const result = await submitToGoogleSheet({
+      name: form.name,
+      phone: form.phone,
+      phoneConfirm: form.phone2,
+      industry: form.industry === "기타" && form.industryOther
+        ? `기타 (${form.industryOther})`
+        : form.industry,
+      website: form.bizUrl,
+      services: form.services,
+      concern: form.message,
+      privacy: form.agree,
+    });
+    setFormLoading(false);
+
+    if (result.success) {
+      setFormSubmitted(true);
+    } else {
+      setFormError(result.error || "제출 중 오류가 발생했습니다. 다시 시도해 주세요.");
+    }
   };
 
   /* ================================================================
@@ -777,8 +801,11 @@ export default function Home() {
                   개인정보 수집·이용에 동의합니다. (이름, 연락처 — 상담 목적)
                 </label>
               </div>
-              <button type="submit" className="form-submit-btn">
-                진단 신청하기
+              {formError && (
+                <p className="form-error-msg">{formError}</p>
+              )}
+              <button type="submit" className="form-submit-btn" disabled={formLoading}>
+                {formLoading ? "전송 중..." : "진단 신청하기"}
               </button>
             </form>
           )}
@@ -798,9 +825,7 @@ export default function Home() {
             <p className="footer-biz">사업자등록번호: 106-18-63007 | 대표: 허준영</p>
           </div>
           <div className="footer-right">
-            <p className="footer-contact-item">📞 전화: (번호 추후 입력)</p>
-            <p className="footer-contact-item">✉️ 이메일: (이메일 추후 입력)</p>
-            <div className="footer-sns">
+<div className="footer-sns">
               <a href="#" aria-label="인스타그램" className="sns-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                   <rect x="2" y="2" width="20" height="20" rx="5" />
@@ -1958,9 +1983,22 @@ export default function Home() {
           font-family: inherit;
           box-shadow: 0 6px 30px rgba(255,107,53,0.35);
         }
-        .form-submit-btn:hover {
+        .form-submit-btn:hover:not(:disabled) {
           transform: translateY(-3px);
           box-shadow: 0 12px 40px rgba(255,107,53,0.5);
+        }
+        .form-submit-btn:disabled {
+          opacity: 0.65;
+          cursor: not-allowed;
+        }
+        .form-error-msg {
+          color: #ff5f5f;
+          font-size: 0.88rem;
+          text-align: center;
+          padding: 10px 16px;
+          background: rgba(255,95,95,0.08);
+          border: 1px solid rgba(255,95,95,0.2);
+          border-radius: 10px;
         }
         .form-success {
           max-width: 480px;
