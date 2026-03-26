@@ -84,31 +84,7 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <div id="loading-screen" style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          backgroundColor: "#0a0a0a",
-          zIndex: 9999,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          transition: "opacity 0.3s ease",
-        }}>
-          <span style={{ color: "#FF6B35", fontSize: "20px", fontWeight: "bold" }}>Grow마케팅</span>
-        </div>
-        <Script id="remove-loading" strategy="afterInteractive">{`
-          window.addEventListener('load', function() {
-            var el = document.getElementById('loading-screen');
-            if (el) {
-              el.style.opacity = '0';
-              setTimeout(function() { el.remove(); }, 300);
-            }
-          });
-        `}</Script>
-        <Header />
+<Header />
         <main>{children}</main>
       </body>
     </html>
