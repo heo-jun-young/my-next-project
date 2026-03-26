@@ -18,7 +18,10 @@ export async function submitToGoogleSheet(formData) {
       body: JSON.stringify(submitData),
     });
     const result = await response.json();
-    return { success: result.result === "success" };
+    if (result.result === "success") {
+      return { success: true };
+    }
+    return { success: false, error: result.message || "전송 실패" };
   } catch (error) {
     return { success: false, error: error.message };
   }
