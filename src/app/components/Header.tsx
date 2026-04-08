@@ -32,7 +32,7 @@ export default function Header() {
             <button onClick={() => scrollTo("process")} className="gnb-link">프로세스</button>
             <button onClick={() => scrollTo("results")} className="gnb-link">성과</button>
             <button onClick={() => scrollTo("contact")} className="gnb-cta-btn">
-              무료 진단 신청
+              문의하기
             </button>
           </div>
 
@@ -52,7 +52,7 @@ export default function Header() {
             <button onClick={() => scrollTo("services")}>서비스</button>
             <button onClick={() => scrollTo("process")}>프로세스</button>
             <button onClick={() => scrollTo("results")}>성과</button>
-            <button onClick={() => scrollTo("contact")} className="mobile-cta">무료 진단 신청</button>
+            <button onClick={() => scrollTo("contact")} className="mobile-cta">문의하기</button>
           </div>
         )}
       </header>

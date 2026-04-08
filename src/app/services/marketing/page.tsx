@@ -460,7 +460,7 @@ export default function MarketingPage() {
             </p>
             <div className="cta-buttons">
               <a href="/contact" className="cta-button primary">
-                무료 마케팅 진단 신청
+                문의하기
               </a>
               <a href="/portfolio" className="cta-button secondary">
                 성공 사례 보기

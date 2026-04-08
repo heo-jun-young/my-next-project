@@ -470,7 +470,7 @@ export default function WebsitePage() {
             경쟁사는 이미 시작했습니다. 지금 바로 차별화하세요! 🚀
           </p>
           <div className="cta-buttons">
-            <button className="cta-button primary">무료 상담 & 견적 받기</button>
+            <button className="cta-button primary">문의하기</button>
             <button className="cta-button secondary">포트폴리오 보기</button>
           </div>
         </div>

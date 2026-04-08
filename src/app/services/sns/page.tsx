@@ -390,7 +390,7 @@ export default function SnsPage() {
               개선 포인트를 찾지 못하면 비용을 청구하지 않습니다.
             </p>
             <div className="cta-buttons">
-              <button className="cta-button primary">무료 광고 진단 받기</button>
+              <button className="cta-button primary">문의하기</button>
               <button className="cta-button secondary">포트폴리오 보기</button>
             </div>
             <p className="cta-note">

@@ -164,7 +164,7 @@ export default function ContactPage() {
         <div className="container">
           <h1 className="page-title fade-up">문의하기</h1>
           <p className="page-desc fade-up">
-            무료 마케팅 진단을 신청하세요.
+            지금 바로 문의하시면 빠르게 연락드립니다.
             <br />
             담당자가 1영업일 이내에 연락드립니다.
           </p>

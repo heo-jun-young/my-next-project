@@ -334,7 +334,7 @@ export default function Home() {
           </p>
           <div className="hero-btns">
             <button className="btn-primary" onClick={() => scrollTo("contact")}>
-              무료 마케팅 진단 받기
+              문의하기
             </button>
             <button className="btn-outline" onClick={() => scrollTo("results")}>
               성공 사례 보기
@@ -535,6 +535,11 @@ export default function Home() {
               <span key={i} className="marquee-tag">{ind}</span>
             ))}
           </div>
+          <div className="marquee-track marquee-track-reverse">
+            {[...INDUSTRIES, ...INDUSTRIES].map((ind, i) => (
+              <span key={`r2-${i}`} className="marquee-tag">{ind}</span>
+            ))}
+          </div>
         </div>
 
         <div className="container">
@@ -645,7 +650,7 @@ export default function Home() {
             설계받으세요.
           </h2>
           <p className="cta-banner-sub" data-aos="fade-up" data-aos-delay="80">
-            무료 마케팅 진단으로 시작합니다.<br />
+            지금 바로 문의하시면 24시간 이내 연락드립니다.<br />
             현재 마케팅의 문제점과 개선 방향을 정확하게 알려드립니다.
           </p>
           <button
@@ -654,7 +659,7 @@ export default function Home() {
             data-aos="fade-up"
             data-aos-delay="160"
           >
-            무료 마케팅 진단 신청하기
+            문의하기
           </button>
         </div>
       </section>
@@ -666,7 +671,7 @@ export default function Home() {
         <div className="container">
           <span className="section-label" data-aos="fade-up">CONTACT</span>
           <h2 className="section-title" data-aos="fade-up" data-aos-delay="80">
-            무료 마케팅 진단 신청
+            문의하기
           </h2>
           <p className="section-desc" data-aos="fade-up" data-aos-delay="140">
             아래 정보를 남겨주시면 24시간 이내 연락드립니다.
@@ -805,7 +810,7 @@ export default function Home() {
                 <p className="form-error-msg">{formError}</p>
               )}
               <button type="submit" className="form-submit-btn" disabled={formLoading}>
-                {formLoading ? "전송 중..." : "진단 신청하기"}
+                {formLoading ? "전송 중..." : "문의하기"}
               </button>
             </form>
           )}
@@ -857,7 +862,7 @@ export default function Home() {
       {/* ── 모바일 하단 고정 CTA ── */}
       <div className="mobile-sticky-cta">
         <button onClick={() => scrollTo("contact")}>
-          무료 진단 신청 →
+          문의하기 →
         </button>
       </div>
 
@@ -1526,10 +1531,14 @@ export default function Home() {
           display: flex;
           gap: 16px;
           white-space: nowrap;
-          animation: marquee 18s linear infinite;
+          animation: marquee 9s linear infinite;
         }
         .marquee-track:hover {
           animation-play-state: paused;
+        }
+        .marquee-track-reverse {
+          display: none;
+          animation: marquee-reverse 9s linear infinite;
         }
         .marquee-tag {
           display: inline-block;
@@ -2195,6 +2204,8 @@ export default function Home() {
 
           /* Industry */
           .industry-section { padding: 80px 0; }
+          .marquee-track-reverse { display: flex; }
+          .marquee-wrap { display: flex; flex-direction: column; gap: 12px; }
 
           /* Results */
           .results-section { padding: 80px 0; }

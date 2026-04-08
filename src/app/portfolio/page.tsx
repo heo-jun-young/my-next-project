@@ -319,10 +319,10 @@ export default function PortfolioPage() {
               다음 성공 사례의 주인공이 되어보세요
             </h2>
             <p className="cta-desc">
-              무료 마케팅 진단으로 귀사의 성장 가능성을 확인하세요.
+              지금 문의하시면 귀사의 성장 가능성을 함께 확인해드립니다.
             </p>
             <Link href="/contact" className="cta-button">
-              무료 상담 신청하기
+              문의하기
             </Link>
           </div>
         </div>
