@@ -81,10 +81,16 @@ const PROCESS_STEPS = [
   },
 ];
 
-const INDUSTRIES = [
-  "피트니스", "필라테스", "병원·의원", "뷰티·에스테틱",
-  "카페·음식점", "학원·교육", "인테리어", "쇼핑몰",
-  "부동산", "법률사무소", "스타트업", "프랜차이즈",
+const INDUSTRIES_ROW1 = [
+  "병원·의원", "필라테스", "뷰티·에스테틱", "헬스장", "피트니스",
+  "카페·음식점", "학원·교육", "인테리어", "공방", "스타트업",
+  "프랜차이즈", "쇼핑몰", "펫샵", "어린이집·유치원",
+];
+
+const INDUSTRIES_ROW2 = [
+  "가구제작업체", "이사업체", "법무법인", "부동산", "한의원",
+  "치과·치과의원", "네일샵", "세탁소", "자동차정비", "웨딩업체",
+  "사진스튜디오", "인쇄·디자인", "요양원·실버케어", "컨설팅",
 ];
 
 const STATS = [
@@ -531,12 +537,12 @@ export default function Home() {
         {/* 마키 */}
         <div className="marquee-wrap" data-aos="fade-up" data-aos-delay="200">
           <div className="marquee-track">
-            {[...INDUSTRIES, ...INDUSTRIES].map((ind, i) => (
+            {[...INDUSTRIES_ROW1, ...INDUSTRIES_ROW1].map((ind, i) => (
               <span key={i} className="marquee-tag">{ind}</span>
             ))}
           </div>
           <div className="marquee-track marquee-track-reverse">
-            {[...INDUSTRIES, ...INDUSTRIES].map((ind, i) => (
+            {[...INDUSTRIES_ROW2, ...INDUSTRIES_ROW2].map((ind, i) => (
               <span key={`r2-${i}`} className="marquee-tag">{ind}</span>
             ))}
           </div>
